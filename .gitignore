@@ -1,0 +1,18 @@
+# Dependencies and generated output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Secrets: only the example file is committed
+.env
+.env.*
+!.env.example
+
+# Real study logs are never committed; only the folder's README is
+data/private/*
+!data/private/README.md
+
+# Operating system clutter
+.DS_Store
+Thumbs.db
