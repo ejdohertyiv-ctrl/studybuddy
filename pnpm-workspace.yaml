@@ -1,0 +1,11 @@
+packages:
+  - apps/*
+  - packages/*
+  - tools/*
+
+# Save exact versions (no ^ or ~), so every install gets the same code.
+savePrefix: ""
+
+# Refuse package versions published less than 7 days ago (in minutes).
+# Brand-new releases are where most broken or malicious packages are caught.
+minimumReleaseAge: 10080
