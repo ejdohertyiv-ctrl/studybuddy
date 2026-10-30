@@ -1,6 +1,6 @@
 # 000 — Repo setup
 
-**Status:** Under review. [Pull request #1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) is open, GitHub's checks pass, and it's waiting for the owner. Three review findings need the owner's decision (see below).
+**Status:** Under review. [Pull request #1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) is open, GitHub's checks pass, and the owner decided all review findings on October 30, 2026. It becomes complete when the owner merges it.
 
 ## Outcome and scope
 
@@ -43,18 +43,18 @@ Both steps share [pull request #1](https://github.com/ejdohertyiv-ctrl/studybudd
 
 From the brief's step 0, checked October 30, 2026:
 
-| Criterion                                                            | Result                                                                                 |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Folders for apps, packages, tools, docs, data and workflows          | Met                                                                                    |
-| TypeScript `strict`, no `any`, no unchecked casts                    | Met: `tsconfig.base.json` plus ESLint rules; shown to fail on violations               |
-| Prettier; ESLint warnings fail the build                             | Met: `--max-warnings 0`                                                                |
-| Vitest with a passing test                                           | Met: 5 tests in `tools/repo-checks`                                                    |
-| CI runs format, lint, type-check and tests                           | Met: plus repo checks                                                                  |
-| README, CLAUDE.md, decision record 0001                              | Met                                                                                    |
-| `data/private/` git-ignored and never committed                      | Met: `.gitignore` plus a CI check                                                      |
-| Exact dependency versions, lockfile committed                        | Met                                                                                    |
-| **Done when the test passes on GitHub**                              | **Met:** CI passed on PR #1 (run 41100627249) after a GitHub Actions outage delayed it |
-| `main` protected; merge by PR only, checks must pass, owner approves | **Not enforceable yet:** see findings R1 and R2                                        |
+| Criterion                                                            | Result                                                                                          |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Folders for apps, packages, tools, docs, data and workflows          | Met                                                                                             |
+| TypeScript `strict`, no `any`, no unchecked casts                    | Met: `tsconfig.base.json` plus ESLint rules; shown to fail on violations                        |
+| Prettier; ESLint warnings fail the build                             | Met: `--max-warnings 0`                                                                         |
+| Vitest with a passing test                                           | Met: 5 tests in `tools/repo-checks`                                                             |
+| CI runs format, lint, type-check and tests                           | Met: plus repo checks                                                                           |
+| README, CLAUDE.md, decision record 0001                              | Met                                                                                             |
+| `data/private/` git-ignored and never committed                      | Met: `.gitignore` plus a CI check                                                               |
+| Exact dependency versions, lockfile committed                        | Met                                                                                             |
+| **Done when the test passes on GitHub**                              | **Met:** CI passed on PR #1 (run 41100627249) after a GitHub Actions outage delayed it          |
+| `main` protected; merge by PR only, checks must pass, owner approves | **Agreed deferral:** enforced once the owner has GitHub Pro (R1); Merge counts as approval (R2) |
 
 ## Examples
 
@@ -72,13 +72,13 @@ From the brief's step 0, checked October 30, 2026:
 
 ## Review findings
 
-| #   | Finding                                                                                                                                                                        | Resolution                                                                                                                      |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| R1  | The brief requires a protected `main`. On a free account, private repos can't have branch protection.                                                                          | **Needs owner decision:** get GitHub Pro free through the Student Developer Pack, or accept convention-only protection for now. |
-| R2  | "Owner approves" can't be enforced as a GitHub approval, because PRs are opened from the owner's own account. The owner's click on **Merge** is the approval.                  | **Needs owner agreement** to this interpretation.                                                                               |
-| R3  | CI runs on pull requests and on `main`, not on every push to every branch as the brief says. The purpose (nothing merges on a red build) is met, and it avoids duplicate runs. | **Needs owner agreement,** or I switch it to every push.                                                                        |
-| R4  | The kebab-case check only covers `.ts`/`.tsx` files under `apps/`, `packages/`, `tools/` (and `data/fixtures/` from 001). Docs and config files follow it by convention.       | Accepted limitation; documented here.                                                                                           |
-| R5  | TypeScript 7 isn't used, because the lint tool supports only up to 6.0.                                                                                                        | Resolved in decision 0001. Revisit when typescript-eslint supports 7.                                                           |
+| #   | Finding                                                                                                                                                                        | Resolution                                                                                                                                                                                                                            |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R1  | The brief requires a protected `main`. On a free account, private repos can't have branch protection.                                                                          | **Deferral agreed (October 30, 2026):** the owner will get GitHub Pro through the Student Developer Pack; then Claude switches on protection for `main` (checks must pass, PR only). Until then, CLAUDE.md and CI are the protection. |
+| R2  | "Owner approves" can't be enforced as a GitHub approval, because PRs are opened from the owner's own account. The owner's click on **Merge** is the approval.                  | **Resolved:** the owner agreed (October 30, 2026).                                                                                                                                                                                    |
+| R3  | CI runs on pull requests and on `main`, not on every push to every branch as the brief says. The purpose (nothing merges on a red build) is met, and it avoids duplicate runs. | **Resolved:** the owner agreed (October 30, 2026). This supersedes the brief's "on every push".                                                                                                                                       |
+| R4  | The kebab-case check only covers `.ts`/`.tsx` files under `apps/`, `packages/`, `tools/` (and `data/fixtures/` from 001). Docs and config files follow it by convention.       | Accepted limitation; documented here.                                                                                                                                                                                                 |
+| R5  | TypeScript 7 isn't used, because the lint tool supports only up to 6.0.                                                                                                        | Resolved in decision 0001. Revisit when typescript-eslint supports 7.                                                                                                                                                                 |
 
 ## Remaining limitations
 
