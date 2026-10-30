@@ -21,3 +21,4 @@ One increment ships at a time. The next starts only after the previous one is me
 | #   | Increment                     | Status       | Depends on | Pull request                                                |
 | --- | ----------------------------- | ------------ | ---------- | ----------------------------------------------------------- |
 | 000 | [Repo setup](000-repo-setup/) | Under review | None       | [#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) |
+| 001 | [Data model](001-data-model/) | Under review | 000        | [#2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) |
