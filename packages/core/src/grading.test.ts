@@ -3,6 +3,7 @@ import type { Question } from "./course-content.ts";
 import {
   categorizeResult,
   findCurrentEvaluation,
+  findEvaluationProblems,
   sumPointsEarned,
   sumRubricPoints,
 } from "./grading.ts";
@@ -119,5 +120,124 @@ describe("findCurrentEvaluation", () => {
       answerEventId: makeId("AnswerEvent", "answer-2"),
     };
     expect(findCurrentEvaluation(answer, [forAnotherAnswer])).toBe(answer.evaluation);
+  });
+
+  it("refuses a correction with an unreadable or zone-less time", () => {
+    expect(() =>
+      findCurrentEvaluation(answer, [correction("fix-4", "yesterday", graded(1, 2))]),
+    ).toThrow("isn't a valid ISO date-time");
+    expect(() =>
+      findCurrentEvaluation(answer, [correction("fix-5", "2026-10-30T16:00:00", graded(1, 2))]),
+    ).toThrow("time zone");
+  });
+
+  it("refuses two corrections at the same latest moment, even written in different zones", () => {
+    const first = correction("fix-6", "2026-10-30T16:00:00Z", graded(1, 1));
+    const second = correction("fix-7", "2026-10-30T12:00:00-04:00", graded(1, 2));
+    expect(() => findCurrentEvaluation(answer, [first, second])).toThrow("same time");
+  });
+
+  it("allows a tie between older corrections when a newer one decides", () => {
+    const olderA = correction("fix-8", "2026-10-30T16:00:00Z", graded(0, 0));
+    const olderB = correction("fix-9", "2026-10-30T16:00:00Z", graded(1, 0));
+    const newest = correction("fix-10", "2026-10-30T18:00:00Z", graded(1, 2));
+    expect(findCurrentEvaluation(answer, [olderA, newest, olderB])).toBe(newest.evaluation);
+  });
+});
+
+describe("findEvaluationProblems: a grade must fit its question", () => {
+  it("finds nothing wrong with a complete, in-range grade", () => {
+    expect(findEvaluationProblems(graded(1, 2), question)).toEqual([]);
+    expect(findEvaluationProblems({ status: "pending" }, question)).toEqual([]);
+  });
+
+  it("flags points above a part's maximum, negative points and non-numbers", () => {
+    expect(findEvaluationProblems(graded(5, 0), question)).toHaveLength(1);
+    expect(findEvaluationProblems(graded(-1, 0), question)).toHaveLength(1);
+    expect(findEvaluationProblems(graded(Number.NaN, 0), question)).toHaveLength(1);
+  });
+
+  it("flags a part the question doesn't have, and a part scored twice", () => {
+    const strayPart: Evaluation = {
+      status: "graded",
+      components: [
+        { componentId: setupPart, pointsEarned: 1 },
+        { componentId: reasonPart, pointsEarned: 2 },
+        { componentId: makeId("RubricComponent", "not-in-this-question"), pointsEarned: 1 },
+      ],
+      gradedBy: grader,
+    };
+    expect(findEvaluationProblems(strayPart, question)).toEqual([
+      "Scores rubric part not-in-this-question, which question question-1 lacks.",
+    ]);
+    const twice: Evaluation = {
+      status: "graded",
+      components: [
+        { componentId: setupPart, pointsEarned: 1 },
+        { componentId: setupPart, pointsEarned: 1 },
+        { componentId: reasonPart, pointsEarned: 0 },
+      ],
+      gradedBy: grader,
+    };
+    expect(findEvaluationProblems(twice, question)).toEqual([
+      "Scores rubric part part-setup more than once.",
+    ]);
+  });
+
+  it("requires a graded result to score every part, but lets an unresolved one score some", () => {
+    const missingPart: Evaluation = {
+      status: "graded",
+      components: [{ componentId: setupPart, pointsEarned: 1 }],
+      gradedBy: grader,
+    };
+    expect(findEvaluationProblems(missingPart, question)).toEqual([
+      "Leaves rubric part part-reason ungraded.",
+    ]);
+    const partlyGradable: Evaluation = { ...missingPart, status: "unresolved", reason: "Unclear" };
+    expect(findEvaluationProblems(partlyGradable, question)).toEqual([]);
+  });
+});
+
+describe("categorizeResult refuses inconsistent grades instead of reporting them", () => {
+  it("throws rather than calling an over-scored answer correct", () => {
+    // Without the check, 5 + 0 = 5 points would exceed the 3 available and read as "correct".
+    expect(() => categorizeResult(graded(5, 0), question)).toThrow("Inconsistent grade");
+  });
+
+  it("throws rather than calling a half-graded answer partly correct", () => {
+    const missingPart: Evaluation = {
+      status: "graded",
+      components: [{ componentId: setupPart, pointsEarned: 1 }],
+      gradedBy: grader,
+    };
+    expect(() => categorizeResult(missingPart, question)).toThrow("ungraded");
+  });
+
+  it("calls full marks correct even when decimal points don't add up exactly", () => {
+    // Worked by hand: parts of 0.1, 0.2 and 0.3 make 0.6 points. In computer arithmetic,
+    // adding them in rubric order gives 0.6000000000000001, but adding the earned points in the
+    // order graded (0.3, 0.2, 0.1) gives exactly 0.6, which an exact comparison would call
+    // less than full marks.
+    const thirdPart = makeId("RubricComponent", "part-apply");
+    const decimalQuestion: Question = {
+      ...question,
+      rubric: [
+        { id: setupPart, description: "Small part", points: 0.1, conceptId },
+        { id: reasonPart, description: "Middle part", points: 0.2, conceptId },
+        { id: thirdPart, description: "Large part", points: 0.3, conceptId },
+      ],
+    };
+    expect(sumRubricPoints(decimalQuestion)).not.toBe(0.6);
+    const fullMarks: Evaluation = {
+      status: "graded",
+      components: [
+        { componentId: thirdPart, pointsEarned: 0.3 },
+        { componentId: reasonPart, pointsEarned: 0.2 },
+        { componentId: setupPart, pointsEarned: 0.1 },
+      ],
+      gradedBy: grader,
+    };
+    expect(sumPointsEarned(fullMarks)).toBe(0.6);
+    expect(categorizeResult(fullMarks, decimalQuestion)).toBe("correct");
   });
 });

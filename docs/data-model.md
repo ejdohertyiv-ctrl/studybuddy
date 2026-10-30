@@ -68,7 +68,8 @@ Increment 1 defines simple versions of these. Increment 2 (the learner model) fi
 ## Technical notes (no decision needed)
 
 - IDs are text with a type attached, so a concept's ID can't be passed where a question's ID is expected.
-- Dates and times are stored as ISO text, such as `2026-10-30T13:00:00Z`. The learner model never reads the clock itself; the time is passed in.
+- Dates and times are stored as ISO text with a time zone, such as `2026-10-30T13:00:00Z`. The learner model never reads the clock itself; the time is passed in. A time that's missing its zone, or names a date that doesn't exist (30 February), is an error, never quietly read as some other moment.
+- **A grade must fit its question before it's read.** Points stay between 0 and each part's maximum, each part is scored at most once, and a "graded" answer scores every part. An inconsistent grade is an error, never shown as a result (`findEvaluationProblems` in `packages/core/src/grading.ts` is the one place this rule lives). If two corrections claim the same latest moment, that's an error too.
 - Sample data in `data/fixtures/` is written in TypeScript and type-checked, so it can't drift from the records. It covers a made-up course, not MGM 301.
 - Reading real exported logs, which needs checking at runtime, comes in increment 2 with the replay tool.
 

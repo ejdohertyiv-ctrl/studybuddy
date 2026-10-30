@@ -1,4 +1,10 @@
-import { categorizeResult, findCurrentEvaluation, type Question } from "@studybuddy/core";
+import {
+  categorizeResult,
+  findCurrentEvaluation,
+  findEvaluationProblems,
+  parseIsoDateTime,
+  type Question,
+} from "@studybuddy/core";
 import { describe, expect, it } from "vitest";
 import { sampleCourse } from "./sample-course.ts";
 
@@ -125,25 +131,31 @@ describe("sample course: questions are well-formed", () => {
     }
   });
 
-  it("only lets answers earn points on their own question's rubric, within each part's points", () => {
-    const evaluations = [
-      ...answers.map((answer) => ({ answer, evaluation: answer.evaluation })),
-      ...corrections.map((correction) => ({
-        answer: answers.find((answer) => answer.id === correction.answerEventId),
-        evaluation: correction.evaluation,
-      })),
+  it("gives every original grade and correction a grade that fits its question", () => {
+    for (const answer of answers) {
+      const question = findQuestion(answer.questionId);
+      expect(findEvaluationProblems(answer.evaluation, question)).toEqual([]);
+      for (const correction of corrections.filter((fix) => fix.answerEventId === answer.id)) {
+        expect(findEvaluationProblems(correction.evaluation, question)).toEqual([]);
+      }
+    }
+  });
+
+  it("writes every moment as a real ISO date-time with a time zone", () => {
+    const moments = [
+      ...sessions.flatMap((session) =>
+        session.endedAt === undefined ? [session.startedAt] : [session.startedAt, session.endedAt],
+      ),
+      ...answers.map((answer) => answer.submittedAt),
+      ...corrections.map((correction) => correction.correctedAt),
+      ...confusionPairs.map((pair) => pair.lastConfusedAt),
+      ...conceptStates.flatMap((state) =>
+        state.nextRetestAt === undefined ? [] : [state.nextRetestAt],
+      ),
     ];
-    for (const { answer, evaluation } of evaluations) {
-      if (answer === undefined || evaluation.status === "pending") {
-        continue;
-      }
-      const rubric = findQuestion(answer.questionId).rubric;
-      for (const score of evaluation.components) {
-        const component = rubric.find((part) => part.id === score.componentId);
-        expect(component).toBeDefined();
-        expect(score.pointsEarned).toBeGreaterThanOrEqual(0);
-        expect(score.pointsEarned).toBeLessThanOrEqual(component?.points ?? 0);
-      }
+    expect(moments.length).toBeGreaterThan(0);
+    for (const moment of moments) {
+      expect(() => parseIsoDateTime(moment)).not.toThrow();
     }
   });
 
