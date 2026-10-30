@@ -1,6 +1,6 @@
 # 001 — Data model
 
-**Status:** Under review. [Pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) is open and waits for increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) to merge first. Some review findings need the owner's agreement (see below).
+**Status:** Under review. [Pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) is open and waits for increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) to merge first. The owner decided the findings that needed agreement on October 30, 2026. The rest are fixed or recorded as open for a named later increment.
 
 ## Outcome and scope
 
@@ -50,7 +50,7 @@ Both steps share pull request #2. Step 1.2 fixes 1.1's review findings.
 - **Assumptions:**
   - Rubric points are finite, non-negative and may be fractions.
   - IDs are unique within their kind.
-  - A "graded" result scores every rubric part (design judgment, R14).
+  - A "graded" result scores every rubric part (agreed by the owner, R14).
 
 ## Acceptance criteria
 
@@ -105,7 +105,7 @@ Each one is covered by a test, and the expected results were worked out by hand:
 | R3  | A grade inconsistent with its question (points over a part's maximum, a stray or duplicate part, an unscored part) was still turned into correct, partly correct or incorrect.                                   | **Fixed in 1.2:** `findEvaluationProblems` is the one authoritative check, and `categorizeResult` refuses inconsistent grades. |
 | R4  | Decimal points could make full marks look like partly correct.                                                                                                                                                   | **Fixed in 1.2:** comparisons allow tiny rounding error.                                                                       |
 | R5  | The sample-data test had its own copy of the points rule.                                                                                                                                                        | **Fixed in 1.2:** it now uses the authoritative check.                                                                         |
-| R6  | Question shape rules (exactly one right option, sibling tags only on wrong options, rubric parts tied to the question's concepts) exist only in the sample-data test, not as a reusable check.                   | **Deferred to increment 004** (question checker), per the roadmap. Owner to confirm.                                           |
+| R6  | Question shape rules (exactly one right option, sibling tags only on wrong options, rubric parts tied to the question's concepts) exist only in the sample-data test, not as a reusable check.                   | **Deferral agreed (October 30, 2026):** built in increment 004 (question checker).                                             |
 | R7  | `SourceDocument.uploadedBy` is shared with the class, so classmates could see who uploaded a file.                                                                                                               | **Open for the friends beta** (privacy decision). Harmless while there's one user.                                             |
 | R8  | Nothing yet says who may edit shared course content.                                                                                                                                                             | **Open for the friends beta.**                                                                                                 |
 | R9  | Calculation units are free text ("%" vs "percent"), and whether 25% is stored as 25 or 0.25 isn't defined.                                                                                                       | **Open:** decide when calculation grading is built.                                                                            |
@@ -113,7 +113,7 @@ Each one is covered by a test, and the expected results were worked out by hand:
 | R11 | Exam dates (`IsoDate`) aren't checked yet, because nothing reads them.                                                                                                                                           | Add a strict reader when the first feature uses exam dates.                                                                    |
 | R12 | Concept statuses (new, re-test, one more, mastered) come from the brief; what earns "mastered" isn't defined.                                                                                                    | **Increment 002.**                                                                                                             |
 | R13 | Two corrections at the same latest moment are refused rather than one being picked.                                                                                                                              | Design judgment; no corrections exist yet.                                                                                     |
-| R14 | A "graded" result must score every rubric part; an "unresolved" one may score only some.                                                                                                                         | Design judgment based on the approved part-by-part grading rule. Owner FYI.                                                    |
+| R14 | A "graded" result must score every rubric part; an "unresolved" one may score only some.                                                                                                                         | **Resolved:** the owner agreed (October 30, 2026).                                                                             |
 
 ## Remaining limitations
 
