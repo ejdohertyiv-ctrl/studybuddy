@@ -21,6 +21,11 @@ Planning and building both happen here. Keep the agreed technology stack and arc
   `increments/README.md` indexes them. Records link to canonical documents rather than copying them; code stays in its usual folders.
 
 - **Status runs** proposed → approved → in progress → under review → complete.
+- **An increment is a collection of steps, numbered `N.1` to `N.9`.** For example, increment 1's steps are 1.1, 1.2, and so on.
+  - Each step is one reviewable piece of related work with its own commit or commits. Its number goes in the commit body and the PR title (`1.2 — ...`).
+  - The increment's record lists every step with its status.
+  - By default each step gets its own pull request, and steps ship in order. Small steps the owner approves together may share one PR.
+  - More than nine steps means the increment is too big: split it into two increments.
 - **Ship one increment at a time.** Plan it, get the owner's approval, build it, open its PR, and wait until the owner approves and merges it before starting the next. Don't stack a new PR on an unmerged one.
 - **Before building, define the increment:** outcome, what's included and excluded, dependencies, acceptance criteria, and examples including edge cases. Check that it fits the product flow and data model.
 - **Keep increments small enough to review, but complete enough to show a usable outcome.**
