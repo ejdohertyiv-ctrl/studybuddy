@@ -12,7 +12,7 @@ Every increment has a numbered folder here holding its planning and review recor
 
 One increment ships at a time. The next starts only after the previous one is merged.
 
-**Steps:** each increment is a collection of related steps, numbered `N.1` to `N.9` (increment 1 → steps 1.1, 1.2, …).
+**Steps:** each increment is a collection of related steps, numbered `N.1` to `N.9` (increment 1 â†’ steps 1.1, 1.2, â€¦).
 
 - Each step is one reviewable piece with its own commits. By default each step gets its own pull request, and steps ship in order; small steps approved together can share one.
 - Each increment's record lists its steps and their status.
@@ -20,5 +20,5 @@ One increment ships at a time. The next starts only after the previous one is me
 
 | #   | Increment                     | Status       | Depends on | Pull request                                                |
 | --- | ----------------------------- | ------------ | ---------- | ----------------------------------------------------------- |
-| 000 | [Repo setup](000-repo-setup/) | Under review | None       | [#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) |
+| 000 | [Repo setup](000-repo-setup/) | Complete     | None       | [#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) |
 | 001 | [Data model](001-data-model/) | Under review | 000        | [#2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) |

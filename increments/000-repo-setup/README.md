@@ -1,6 +1,6 @@
 # 000 — Repo setup
 
-**Status:** Under review. [Pull request #1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) is open, GitHub's checks pass, and the owner decided all review findings on October 30, 2026. It becomes complete when the owner merges it.
+**Status:** Complete. [Pull request #1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) was merged into `main` on October 30, 2026 at the owner's request, with checks passing. All review findings are resolved or deferred by agreement; R1 (branch protection) is switched on once the owner has GitHub Pro.
 
 ## Outcome and scope
 
