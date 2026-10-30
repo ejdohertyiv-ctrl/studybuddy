@@ -45,7 +45,7 @@ Every record has an `id`. Every private record has an `ownerId`, so friends' dat
 
 **An AnswerEvent records:**
 
-- **The response:** the option picked, typed text, or a number. ("I don't know yet" as its own kind of response was proposed but not approved; see decision 0003.)
+- **The response:** the option picked, typed text, or a number. ("I don't know yet" as its own kind of response was proposed and deliberately left out; see decision 0003.)
 - **Confidence, optional, as a single "unsure" flag:** marked or not marked. Not marked is **not** evidence of confidence either way (your approved rule).
 - **Help used:** none, hint, or worked example.
 - **Time taken and when it was submitted.** Time is stored but, per your plan, never used alone to judge ability.

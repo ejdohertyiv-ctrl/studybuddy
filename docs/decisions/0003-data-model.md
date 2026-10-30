@@ -26,7 +26,7 @@ Approved:
 5. **Confusion and progress records are defined simply now** and finalised in increment 2 with the learner model.
 6. **Confidence is a single optional "unsure" flag** (`markedUnsure`). Not marked means no information, not confidence.
 
-Not approved: **"I don't know yet" as its own kind of response.** The proposal included it, but the owner left it unselected, so it isn't built. The planning folder's approved screening behaviour includes an "I don't know yet" control, so this needs a decision before the screening screens are built.
+Not approved: **"I don't know yet" as its own kind of response.** The proposal included it, the owner left it unselected, and then confirmed leaving it out (October 30, 2026). The planning folder's screening plan mentions an "I don't know yet" control. How that screen records such a choice gets decided when the screen is built, without adding a new response kind here.
 
 Technical choices:
 
@@ -39,4 +39,4 @@ Technical choices:
 - Increment 2 can read answers, rubric points, mix-ups and unsure flags without guessing.
 - Changing a record now means changing `packages/core`. The type checker then points at every place that needs updating, including the fixtures.
 - Reading real exported logs needs runtime checking. That comes in increment 2 with `tools/replay`, and may need a validation library, which would get its own decision.
-- Open: "I don't know yet", the exact on-screen confidence wording, the difficulty scale, and how "mastered" is decided (increment 2).
+- Open: how the screening screen records an "I don't know yet" choice, the exact on-screen confidence wording, the difficulty scale, and how "mastered" is decided (increment 2).
