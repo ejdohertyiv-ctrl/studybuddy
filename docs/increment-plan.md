@@ -13,7 +13,7 @@
 ## Phase 1: just me (local, $0, no accounts)
 
 0. **Repo setup** (this increment, approved October 30, 2026). A TypeScript pnpm monorepo outside OneDrive, with formatting, linting, type-checking, tests, repo checks and CI; docs and decision records 0001–0002.
-1. **Data model** in `packages/core`. Every record has an owner ID. Shared course content (course, topic, concept, question) is kept apart from personal records (session, answer event, confusion pair, concept state). Done when every record has a type and made-up fixture data.
+1. **Data model** in `packages/core` (approved and built October 30, 2026; see [data-model.md](data-model.md)). Every record has an owner ID. Shared course content (course, topic, concept, question) is kept apart from personal records (session, answer event, confusion pair, concept state). Done when every record has a type and made-up fixture data.
 2. **Learner model and scheduler** in `packages/learner`, replayed on the Exam 2 log through `tools/replay`. Done when it flags the same weak spots the real prep found: zone pricing, PLC stages and divisibility.
 3. **Connection test.** A minimal local server with one tool and one screen, connected to Claude Desktop. It answers decision 0002's open questions:
    - Can uploaded slide files reach the server?

@@ -6,6 +6,7 @@ One record per decision that would make someone ask "why?". Name each one `NNNN-
 | --------------------------------------------- | ----------------------------------------------------- | ------------------------------------ |
 | [0001](0001-typescript-monorepo.md)           | One TypeScript monorepo with pnpm, no build step      | Accepted, October 30, 2026           |
 | [0002](0002-run-inside-claude-and-chatgpt.md) | Run StudyBuddy inside the learner's Claude or ChatGPT | Accepted direction, October 30, 2026 |
+| [0003](0003-data-model.md)                    | Increment 1 data model                                | Accepted, October 30, 2026           |
 
 ## Template
 

@@ -2,6 +2,7 @@ packages:
   - apps/*
   - packages/*
   - tools/*
+  - data/fixtures
 
 # Save exact versions (no ^ or ~), so every install gets the same code.
 savePrefix: ""
