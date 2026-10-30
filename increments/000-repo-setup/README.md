@@ -16,6 +16,15 @@
 
 **Excluded:** any study feature, data model or app code (increment 001 onward).
 
+## Steps
+
+Both steps share [pull request #1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1). Step 0.2 adds the review records that 0.1 is checked against.
+
+| Step | What                                                                                            | Status                   |
+| ---- | ----------------------------------------------------------------------------------------------- | ------------------------ |
+| 0.1  | Monorepo, tooling, repo checks, CI, README, CLAUDE.md, architecture, decision records 0001–0002 | Under review (CI passed) |
+| 0.2  | `increments/` records and step numbering, the review rules in CLAUDE.md, this review            | Under review             |
+
 ## Requirements and decisions
 
 - Brief, build order step 0: [docs/architecture.md](../../docs/architecture.md). Steps were renamed increments on October 30, 2026.
