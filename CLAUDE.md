@@ -2,7 +2,7 @@
 
 Read this before every session. The owner is a student, not a professional engineer. Claude writes and tests the code; the owner reviews and approves every change. Explain what you're doing in plain English as you go.
 
-Background: [docs/architecture.md](docs/architecture.md) (the original brief and what changed since), [docs/increment-plan.md](docs/increment-plan.md) (the roadmap), [increments/](increments/README.md) (each increment's status and review record) and [docs/decisions/](docs/decisions/README.md) (why things are the way they are). Product plans, user flows, screen designs and research live in the planning folder, `C:\Users\ejdoh\OneDrive\Desktop\Claude\StudyBuddy`. Read `plan/app-outline.md` there before product decisions.
+Background: [docs/architecture.md](docs/architecture.md) (the original brief and what changed since), [docs/increment-plan.md](docs/increment-plan.md) (the roadmap), [increments/](increments/README.md) (each increment's status and review record) and [docs/decisions/](docs/decisions/README.md) (why things are the way they are). Product plans, user flows, screen designs and research live in the shared planning home, `C:\Users\ejdoh\OneDrive\Documents\ChatGPT\Brainstorm_Bot\StudyBuddy`, which Claude and ChatGPT both use since November 1, 2026. Start with its `README.md` and `CURRENT-STATE.md`, and read `plan/app-outline.md` and `plan/decisions-and-proposals.md` there before product decisions. The older `OneDrive\Desktop\Claude\StudyBuddy` folder is kept as history; don't edit it.
 
 ## How work is organised
 

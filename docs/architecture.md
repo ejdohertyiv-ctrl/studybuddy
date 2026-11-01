@@ -12,7 +12,7 @@ A study app with three modes:
 
 A dashboard and calendar come later. It works for any class with an exam.
 
-It was tested for real on MGM 301 (marketing) Exam 2 prep: 46 sessions, 243 graded answers, 41 observations. Scores went from 6/16 on a diagnostic to 18/20 on the professor's practice exam.
+The method (not this code, which didn't exist yet) was tried for real on MGM 301 (marketing) Exam 2 prep: one learner, run by hand in a Claude chat and logged to a page, over 46 sessions, 243 graded answers and 41 observations. Scores went from 6/16 on a diagnostic to 18/20 on the professor's practice exam, which allowed unlimited retakes. The real exam score wasn't recorded at the time.
 
 ## Product rules the code must support (from that test)
 
@@ -101,4 +101,4 @@ Open questions in the original brief, not blocking steps 0–2: web framework (l
   - Hosting stays at $0 until revenue.
 - **TypeScript 6, not 7, and no build step** ([decision 0001](decisions/0001-typescript-monorepo.md)).
 - **Every record gets an owner ID from increment 1,** so personal data stays separable when friends join.
-- **The planning folder** (`OneDrive\Desktop\Claude\StudyBuddy`) remains the home for product plans, user flows, screen designs and research. This repo is the home for technical docs and code.
+- **The shared planning home** (`OneDrive\Documents\ChatGPT\Brainstorm_Bot\StudyBuddy`, since November 1, 2026) is the home for product plans, user flows, screen designs and research. It replaced `OneDrive\Desktop\Claude\StudyBuddy`, which is kept as history. This repo is the home for technical docs and code.
