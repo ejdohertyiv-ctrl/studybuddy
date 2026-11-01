@@ -2,6 +2,50 @@
 
 **Status:** the direction was accepted on October 30, 2026 ([decision 0002](decisions/0002-run-inside-claude-and-chatgpt.md)). Each increment's contents are a proposal until the owner approves it. Each increment lands as one or more pull requests and ends with something the owner can check. This page is the roadmap; each increment's current status and review record live in [increments/](../increments/README.md).
 
+**Roadmap version:** 1.1, November 1, 2026. What changed in each version is in [Roadmap history](#roadmap-history).
+
+## Map
+
+Every phase and increment in build order. Solid arrows are the order increments ship in, one at a time. Dotted arrows are extra dependencies the plan names. Dashed boxes are proposed, not scheduled. The map shows the plan's shape only; for where each increment stands now, see [increments/](../increments/README.md).
+
+```mermaid
+flowchart TD
+    subgraph P1["Phase 1: just me (laptop, $0, no accounts)"]
+        I0["0 · Repo setup"] --> I1["1 · Data model"]
+        I1 --> I2["2 · Learner model and scheduler"]
+        I2 --> I3["3 · Connection test"]
+        I3 --> I4["4 · Question specs and checker"]
+        I4 --> I5["5 · Course import through the chat"]
+        I5 --> I6["6 · One Quick Review session, start to finish"]
+        I6 --> M1(["Phase 1 done: the owner studies a real exam with it"])
+        I0 -. "3 can run any time after 0" .-> I3
+        I3 -. "file-upload finding shapes import" .-> I5
+    end
+
+    subgraph P2["Phase 2: friends beta (free hosting, still $0)"]
+        I7["7 · Go online, invite-only sign-in"] --> I8["8 · Before inviting anyone"]
+        I8 --> M2(["First friends invited"])
+        M2 --> I9["9 · Shared course banks"]
+    end
+
+    subgraph P3["Phase 3: public or revenue (later)"]
+        P3A["App-directory listing, paid tiers as triggered, startup credits"]
+    end
+
+    SW["Slide walkthrough (proposed, not scheduled)"]
+
+    M1 --> I7
+    I9 --> P3A
+    I3 -. "needs the file-upload finding" .-> SW
+
+    classDef milestone fill:#e8f3ec,stroke:#2e7d4f,color:#1b4d31
+    classDef later fill:#f4f4f4,stroke:#999,color:#555
+    classDef proposed fill:#fff,stroke:#999,stroke-dasharray:5 4,color:#555
+    class M1,M2 milestone
+    class P3A later
+    class SW proposed
+```
+
 ## Phases
 
 | Phase                | Who uses it                    | Where it runs                                                | Cost                |
@@ -99,3 +143,12 @@ Early notes:
 - [Cloudflare Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/): free plan has 10 ms CPU per request; R2 has 10 GB free storage. A possible beta host now that parsing moves to the AI.
 - [Supabase anonymous sign-ins](https://supabase.com/docs/guides/auth/auth-anonymous): merging into an existing account is manual. Supports dropping the anonymous preview for now.
 - Platform sources are listed in [decision 0002](decisions/0002-run-inside-claude-and-chatgpt.md).
+
+## Roadmap history
+
+Every change to this page lands by pull request and gets a line here. A whole-number version means the plan itself changed: a phase or increment was added, removed, reordered or rescoped. A decimal version means the plan is the same and only its presentation or wording changed. Git keeps every earlier version of this page.
+
+| Version | Date             | What changed                                                                            |
+| ------- | ---------------- | --------------------------------------------------------------------------------------- |
+| 1.1     | November 1, 2026 | Added the map and this history. No change to phases or increments.                      |
+| 1.0     | October 30, 2026 | Direction accepted (decision 0002): three phases, increments 0 to 9, slide idea logged. |
