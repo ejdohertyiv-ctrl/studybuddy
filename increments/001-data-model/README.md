@@ -1,6 +1,6 @@
 # 001 — Data model
 
-**Status:** Under review. [Pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) is open and waits for increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) to merge first. The owner decided the findings that needed agreement on October 30, 2026. The rest are fixed or recorded as open for a named later increment.
+**Status:** Under review. Steps 1.1 and 1.2 are in [pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2), which is ready to merge now that increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) is merged. The owner decided the findings that needed agreement on October 30, 2026; the rest are fixed or recorded as open for a named later increment. Step 1.3, the real-data check, is **blocked** until the real samples arrive, and the [data-quality gate](#data-quality-gate) keeps increment 002 waiting until it passes.
 
 ## Outcome and scope
 
@@ -26,12 +26,13 @@
 
 ## Steps
 
-Both steps share pull request #2. Step 1.2 fixes 1.1's review findings.
+Steps 1.1 and 1.2 share pull request #2. Step 1.2 fixes 1.1's review findings. Step 1.3 was added on November 1, 2026 by the data-quality gate and will get its own pull request.
 
-| Step | What                                                                                                                      | Status       |
-| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Under review |
-| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Under review |
+| Step | What                                                                                                                      | Status                          |
+| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Under review                    |
+| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Under review                    |
+| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Blocked: needs the real samples |
 
 ## Requirements and decisions
 
@@ -117,5 +118,38 @@ Each one is covered by a test, and the expected results were worked out by hand:
 
 ## Remaining limitations
 
-- Real-world fit is unvalidated until increment 002 replays the real Exam 2 log.
+- Real-world fit is unvalidated until step 1.3 passes. Under the data-quality gate, that check now comes before increment 002, not during it.
 - No validation library yet. Real logs will need runtime checks; that decision comes in 002.
+
+## Data-quality gate
+
+Applied after the fact on November 1, 2026. These gaps are recorded, not rebuilt. Each one is assigned to the increment that needs it.
+
+| Critical input                  | Likely failure                                         | Check today                                                                | On failure                                |
+| ------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------- | ----------------------------------------- |
+| Grades (points per rubric part) | Points over a part's maximum, stray or missing parts   | `findEvaluationProblems`; `categorizeResult` refuses (tested, hand-worked) | Error with a plain reason, never a result |
+| Unresolved grades               | Shown as a learning result                             | `categorizeResult` returns "unresolved" (tested)                           | Kept apart, never "partly correct"        |
+| Times                           | Impossible dates, missing zones, text like "yesterday" | Strict readers in `time.ts` (tested)                                       | Error                                     |
+| Corrections                     | Two at the same moment                                 | Refused (tested)                                                           | Error                                     |
+| AI-written questions            | Wrong key, ambiguous, unsupported                      | `checkStatus` is draft, checked or rejected; nothing enforces it yet       | **Gaps G2, G3**                           |
+| AI-extracted concepts           | Made up, missing, or a distorted definition            | **None:** `Concept` has no check status                                    | **Gap G1**                                |
+| Real exported logs and slides   | Don't fit the records                                  | **Not tested:** only the made-up "MKT 100" sample has been used            | **Gap G5**                                |
+
+**Gaps:**
+
+| #   | Gap                                                                                                                                                                                                                | Blocks        |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| G1  | `Concept` has no draft, checked or rejected status, so AI-extracted concepts can't be held as drafts.                                                                                                              | Increment 005 |
+| G2  | A draft or rejected `Question` has no reason field, so the learner can't see why it was held back.                                                                                                                 | Increment 004 |
+| G3  | "Only checked questions count" is a comment on the type. No function enforces it yet; the learner model has to, with a test.                                                                                       | Increment 002 |
+| G4  | Nothing checks the shape of incoming data at runtime (already noted above).                                                                                                                                        | Increment 002 |
+| G5  | Real-data fit is untested. **Step 1.3** expresses about 30 real Exam 2 answers and about 10 real slides in these records, runs the existing checks on them, and records every field that can't hold the real data. | Increment 002 |
+
+**What step 1.3 needs.** As of November 1, 2026, neither sample is on this laptop. `data/private/` holds only its README, and no MGM 301 slides or Exam 2 export were found in the usual folders. The owner needs to provide:
+
+1. **The Exam 2 log export**, saved in `data/private/`. About 30 answers is enough if they include correct, incorrect, partly correct, unsure and regraded ones, and the zone pricing, PLC stages and divisibility misses.
+2. **One real lecture deck**, of which about 10 slides are used, saved in `data/private/`.
+
+Until then, nothing from these samples counts as validation. The sample course stays a development aid.
+
+**Gate: blocked for increment 002.** Merging pull request #2 is fine. The learner model waits for step 1.3 to pass. Independent work (increment 003, the connection test) can go ahead.
