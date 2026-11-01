@@ -10,6 +10,8 @@ Every increment has a numbered folder here holding its planning and review recor
 - **Under review:** pull request open, waiting for checks and the owner.
 - **Complete:** merged, acceptance criteria met, review findings resolved or deferral agreed.
 
+**Data-quality gate:** every record has a short section listing its critical inputs, failure cases, checks, and what happens on failure, plus whether later increments may build on it (rules in [CLAUDE.md](../CLAUDE.md#data-quality-gate-every-increment)). An increment can be merged while its gate is still blocked. Dependent work waits until the gate passes.
+
 One increment ships at a time. The next starts only after the previous one is merged.
 
 **Steps:** each increment is a collection of related steps, numbered `N.1` to `N.9` (increment 1 → steps 1.1, 1.2, …).
