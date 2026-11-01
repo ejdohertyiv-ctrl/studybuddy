@@ -77,10 +77,10 @@ Each increment's record carries its own gate ([rules in CLAUDE.md](../CLAUDE.md#
 
 **Real data enters at increment 1, step 1.3.** Before increment 2 builds on the data model, a small real sample has to fit it:
 
-- about 30 answers from the MGM 301 Exam 2 log, covering correct, incorrect, partly correct, unsure and regraded answers, including the zone pricing, PLC stages and divisibility misses
+- about 30 answers from the MGM 301 Exam 2 log, including the zone pricing, PLC stages and divisibility misses
 - about 10 slides from one real lecture deck
 
-Both live in `data/private/`. As of November 1, 2026, **neither is on this laptop**, so step 1.3 is blocked and increment 2 is blocked behind it. The details are in [increment 001's record](../increments/001-data-model/README.md).
+Both samples were found on November 1, 2026. They are kept in the owner's private materials folder outside the repo, and only the samples used are copied into `data/private/`. The log has no rubric points and no "unsure" mark, so step 1.3 decides how those older answers map onto the records. Step 1.3 is ready to plan. Increment 2 waits until it passes. The details are in [increment 001's record](../increments/001-data-model/README.md).
 
 **Increment 2 (learner model) must also show:**
 
