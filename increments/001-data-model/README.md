@@ -1,6 +1,6 @@
 # 001 — Data model
 
-**Status:** Under review. Steps 1.1 and 1.2 are in [pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2), which is ready to merge now that increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) is merged. The owner decided the findings that needed agreement on October 30, 2026; the rest are fixed or recorded as open for a named later increment. Step 1.3, the real-data check, is **blocked** until the real samples arrive, and the [data-quality gate](#data-quality-gate) keeps increment 002 waiting until it passes.
+**Status:** Under review. Steps 1.1 and 1.2 are in [pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2), which is ready to merge now that increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) is merged. The owner decided the findings that needed agreement on October 30, 2026; the rest are fixed or recorded as open for a named later increment. Step 1.3, the real-data check, is ready to plan now that the real samples have been found. The [data-quality gate](#data-quality-gate) keeps increment 002 waiting until it passes.
 
 ## Outcome and scope
 
@@ -28,11 +28,11 @@
 
 Steps 1.1 and 1.2 share pull request #2. Step 1.2 fixes 1.1's review findings. Step 1.3 was added on November 1, 2026 by the data-quality gate and will get its own pull request.
 
-| Step | What                                                                                                                      | Status                          |
-| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Under review                    |
-| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Under review                    |
-| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Blocked: needs the real samples |
+| Step | What                                                                                                                      | Status                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Under review                         |
+| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Under review                         |
+| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Proposed: samples found, not started |
 
 ## Requirements and decisions
 
@@ -145,11 +145,11 @@ Applied after the fact on November 1, 2026. These gaps are recorded, not rebuilt
 | G4  | Nothing checks the shape of incoming data at runtime (already noted above).                                                                                                                                        | Increment 002 |
 | G5  | Real-data fit is untested. **Step 1.3** expresses about 30 real Exam 2 answers and about 10 real slides in these records, runs the existing checks on them, and records every field that can't hold the real data. | Increment 002 |
 
-**What step 1.3 needs.** As of November 1, 2026, neither sample is on this laptop. `data/private/` holds only its README, and no MGM 301 slides or Exam 2 export were found in the usual folders. The owner needs to provide:
+**What step 1.3 uses.** Both samples were found on November 1, 2026. An earlier note here said they were missing; that was wrong, because the search was cut short. They are kept outside the repo in the owner's private materials folder (`C:\Users\ejdoh\dev\studybuddy-materials`). Only the small samples step 1.3 uses get copied into `data/private/`.
 
-1. **The Exam 2 log export**, saved in `data/private/`. About 30 answers is enough if they include correct, incorrect, partly correct, unsure and regraded ones, and the zone pricing, PLC stages and divisibility misses.
-2. **One real lecture deck**, of which about 10 slides are used, saved in `data/private/`.
+1. **The Exam 2 log:** a read-only export of the database behind the owner's Exam 2 log page on claude.ai: 46 sessions and 243 graded answers. Step 1.3 uses about 30 of them, including the zone pricing, PLC stages and divisibility misses. The log records right or wrong, the answer, the wrong option picked, the topic and notes. It has **no rubric points and no "unsure" mark**, so step 1.3 must decide how answers logged before the app exist map onto `Evaluation` and `markedUnsure` without inventing either one.
+2. **One real lecture deck:** `MGM301_10_Pricing - 1.pptx` (proposed, because it covers zone pricing), of which about 10 slides are used.
 
-Until then, nothing from these samples counts as validation. The sample course stays a development aid.
+Nothing from these samples counts as validation until step 1.3 is done and reviewed. The sample course stays a development aid.
 
-**Gate: blocked for increment 002.** Merging pull request #2 is fine. The learner model waits for step 1.3 to pass. Independent work (increment 003, the connection test) can go ahead.
+**Gate: blocked for increment 002 until step 1.3 passes.** The materials are available, so step 1.3 is ready to plan. Merging pull request #2 is fine. Independent work (increment 003, the connection test) can go ahead.
