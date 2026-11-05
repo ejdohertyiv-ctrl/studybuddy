@@ -1,6 +1,6 @@
 # 003 — Connection test
 
-**Status:** In progress. The owner approved the blueprint on November 4, 2026, with a made-up question and a made-up slide deck. Step 3.1 is built and its pull request is open. Steps 3.2 and 3.3 were done on November 5, 2026: the card works, and a dropped file reaches StudyBuddy as text only. All three steps are done; the increment is complete once this pull request is merged.
+**Status:** Complete. The owner approved the blueprint on November 4, 2026, with a made-up question and a made-up slide deck, and merged it on November 5, 2026 ([pull request #5](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/5)). The card works inside Claude Desktop (step 3.2), and a dropped file reaches StudyBuddy as text only (step 3.3).
 
 ## Outcome and scope
 
