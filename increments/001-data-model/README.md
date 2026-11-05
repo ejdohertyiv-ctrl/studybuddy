@@ -1,6 +1,6 @@
 # 001 — Data model
 
-**Status:** In progress. Steps 1.1 and 1.2 were merged on November 4, 2026 ([pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2)). Step 1.3, the real-data check (the load test), was run on November 5, 2026: 30 real Exam 2 answers and 10 real slides were put into these records. Every answer and slide either fit or has a written reason, and the existing checks found no errors. It also found [gaps](#step-13-findings) the records need fixed before increment 002 can replay the real log. Those fixes are proposed as step 1.4 and wait for the owner's OK.
+**Status:** In progress. Steps 1.1 and 1.2 were merged on November 4, 2026 ([pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2)). Step 1.3, the real-data check (the load test), was run on November 5, 2026: 30 real Exam 2 answers and 10 real slides were put into these records. Every answer and slide either fit or has a written reason, and the existing checks found no errors. It also found [gaps](#step-13-findings) the records need fixed before increment 002 can replay the real log. The owner merged step 1.3 ([pull request #6](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/6)) and approved those fixes as step 1.4 on November 5, 2026 (plan: shared planning home, `plan/step-1.4-blueprint.md`).
 
 ## Outcome and scope
 
@@ -28,12 +28,12 @@
 
 Steps 1.1 and 1.2 share pull request #2. Step 1.2 fixes 1.1's review findings. Step 1.3 was added on November 1, 2026 by the data-quality gate and will get its own pull request.
 
-| Step | What                                                                                                                      | Status                              |
-| ---- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Merged November 4, 2026             |
-| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Merged November 4, 2026             |
-| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Done November 5, 2026; under review |
-| 1.4  | Fix the gaps step 1.3 found that block increment 002                                                                      | Proposed; needs the owner's OK      |
+| Step | What                                                                                                                      | Status                    |
+| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Merged November 4, 2026   |
+| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Merged November 4, 2026   |
+| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Merged November 5, 2026   |
+| 1.4  | Fix the gaps step 1.3 found that block increment 002                                                                      | Approved November 5, 2026 |
 
 ## Requirements and decisions
 
@@ -186,7 +186,7 @@ The log's shape was also checked as it was read: all 46 sessions and 8 topics pa
 
 **What it means:** grades fit fine. Everything about _what was asked_ and _when_ doesn't, because the log never kept it and the records have no way to say "not recorded". The thermostat (increment 002) needs at least the concept each answer tests and a way to hold "not recorded".
 
-**Fix list (proposed, for the owner's OK):**
+**Fix list (F1–F4 approved by the owner as step 1.4, November 5, 2026):**
 
 | #   | Fix                                                                                                                                                 | When                                  |
 | --- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |

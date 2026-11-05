@@ -1,6 +1,6 @@
 # apps
 
-The programs people use. Empty until later increments (see [docs/increment-plan.md](../docs/increment-plan.md)):
+The programs people use (see [docs/increment-plan.md](../docs/increment-plan.md)). Both started in [increment 003](../increments/003-connection-test/README.md):
 
 - `server/`: the StudyBuddy MCP server that Claude or ChatGPT connects to. It starts in increment 3.
 - `screens/`: the small interactive screens shown inside the chat (MCP Apps). It starts in increment 3.

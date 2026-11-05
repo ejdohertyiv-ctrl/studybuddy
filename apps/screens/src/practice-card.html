@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StudyBuddy practice card</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --page: #ffffff;
+        --card: #f7f6f3;
+        --text: #1f1e1b;
+        --muted: #5f5d57;
+        --border: #c9c7c1;
+        --accent: #185fa5;
+        --accent-bg: #e6f1fb;
+        --right: #3b6d11;
+        --right-bg: #eaf3de;
+        --wrong: #a32d2d;
+        --wrong-bg: #fcebeb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #1c1c1a;
+          --card: #242422;
+          --text: #f1efe8;
+          --muted: #b4b2a9;
+          --border: #5f5e5a;
+          --accent: #85b7eb;
+          --accent-bg: #0c447c;
+          --right: #97c459;
+          --right-bg: #27500a;
+          --wrong: #f09595;
+          --wrong-bg: #501313;
+        }
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--page);
+        color: var(--text);
+        font:
+          15px/1.5 system-ui,
+          sans-serif;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 16px 18px;
+      }
+      .tag {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      h1 {
+        font-size: 17px;
+        font-weight: 500;
+        margin: 0 0 12px;
+      }
+      .options {
+        display: grid;
+        gap: 8px;
+      }
+      button {
+        font: inherit;
+        text-align: left;
+        color: var(--text);
+        background: var(--page);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) {
+        border-color: var(--accent);
+      }
+      button:disabled {
+        cursor: default;
+      }
+      button.right {
+        background: var(--right-bg);
+        border-color: var(--right);
+        color: var(--right);
+      }
+      button.wrong {
+        background: var(--wrong-bg);
+        border-color: var(--wrong);
+        color: var(--wrong);
+      }
+      .result {
+        margin: 12px 0 0;
+        min-height: 1.5em;
+      }
+      .note {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 10px 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <p class="tag">StudyBuddy · practice question (made-up sample)</p>
+      <h1 id="stem">Loading the question…</h1>
+      <div class="options" id="options"></div>
+      <p class="result" id="result" aria-live="polite"></p>
+      <p class="note">Your answer is checked and saved by StudyBuddy on your computer.</p>
+    </div>
+    <!-- MCP_APPS_LIBRARY -->
+    <script type="module">
+      const { App } = globalThis.StudyBuddyApps;
+      const app = new App(
+        { name: "StudyBuddy practice card", version: "0.1.0" },
+        {},
+        { autoResize: true },
+      );
+      const stemEl = document.getElementById("stem");
+      const optionsEl = document.getElementById("options");
+      const resultEl = document.getElementById("result");
+      let question = null;
+
+      function showResult(result) {
+        for (const button of optionsEl.querySelectorAll("button")) {
+          button.disabled = true;
+          if (button.dataset.label === result.correctLabel) button.classList.add("right");
+          else if (button.dataset.label === result.pickedLabel) button.classList.add("wrong");
+        }
+        resultEl.textContent = (result.correct ? "Right. " : "Not quite. ") + result.explanation;
+      }
+
+      function render(card) {
+        question = card;
+        stemEl.textContent = card.stem;
+        optionsEl.replaceChildren(
+          ...card.options.map((option) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.dataset.label = option.label;
+            button.textContent = `${option.label}. ${option.text}`;
+            button.addEventListener("click", () => submit(option.label));
+            return button;
+          }),
+        );
+        resultEl.textContent = "";
+        if (card.savedResult) showResult(card.savedResult);
+      }
+
+      async function submit(label) {
+        if (!question) return;
+        for (const button of optionsEl.querySelectorAll("button")) button.disabled = true;
+        resultEl.textContent = "Checking…";
+        try {
+          const reply = await app.callServerTool({
+            name: "submit_practice_answer",
+            arguments: { questionId: question.questionId, option: label },
+          });
+          if (reply.isError || !reply.structuredContent)
+            throw new Error("StudyBuddy couldn't save that answer.");
+          showResult(reply.structuredContent);
+        } catch (error) {
+          for (const button of optionsEl.querySelectorAll("button")) button.disabled = false;
+          resultEl.textContent = `${error instanceof Error ? error.message : "Something went wrong."} Try again.`;
+        }
+      }
+
+      app.ontoolresult = (params) => {
+        if (params.structuredContent) render(params.structuredContent);
+      };
+      await app.connect();
+    </script>
+  </body>
+</html>
