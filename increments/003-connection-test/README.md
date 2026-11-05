@@ -1,6 +1,6 @@
 # 003 — Connection test
 
-**Status:** In progress. The owner approved the blueprint on November 4, 2026, with a made-up question and a made-up slide deck. Step 3.1 is built and its pull request is open. Step 3.2 passed on November 5, 2026. Step 3.3 (the file test) needs the owner in Claude Desktop.
+**Status:** In progress. The owner approved the blueprint on November 4, 2026, with a made-up question and a made-up slide deck. Step 3.1 is built and its pull request is open. Steps 3.2 and 3.3 were done on November 5, 2026: the card works, and a dropped file reaches StudyBuddy as text only. All three steps are done; the increment is complete once this pull request is merged.
 
 ## Outcome and scope
 
@@ -24,13 +24,13 @@
 
 ## Steps
 
-| Step | What                                                                                                               | Status                   |
-| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ |
-| 3.1  | Server, practice card, file-test tool, tests                                                                       | Built; pull request open |
-| 3.2  | Connect to Claude Desktop; the owner opens the card, answers, restarts Claude and checks the answer is still there | Passed November 5, 2026  |
-| 3.3  | File test: drop a made-up slide deck into the chat, send it to StudyBuddy, record what arrived                     | Waiting for the owner    |
+| Step | What                                                                                                               | Status                           |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
+| 3.1  | Server, practice card, file-test tool, tests                                                                       | Built; pull request open         |
+| 3.2  | Connect to Claude Desktop; the owner opens the card, answers, restarts Claude and checks the answer is still there | Passed November 5, 2026          |
+| 3.3  | File test: drop a made-up slide deck into the chat, send it to StudyBuddy, record what arrived                     | Done November 5, 2026: text only |
 
-Steps 3.2 and 3.3 produce findings, not much code. They are recorded below in a follow-up pull request.
+Steps 3.2 and 3.3 produce findings, not code. They are recorded below, in this pull request.
 
 ## Acceptance criteria
 
@@ -95,6 +95,16 @@ Things we learned:
 - **The Code tab doesn't load these servers.** Asking there gets an answer from Claude's general knowledge, not the card.
 - **Without the server, Claude makes things up.** Before the connection worked, a regular chat answered "show me a StudyBuddy practice question" with its own text and then with a mockup drawn from the design files. So "a card appeared" isn't proof: check for the `studybuddy` tool label or a saved answer.
 
-### Step 3.3
+### Step 3.3 — done November 5, 2026: text only
 
-Not done yet.
+The owner dragged a made-up 3-slide deck (57,516 bytes, two check phrases) into a regular Claude Desktop chat and asked Claude to send it to StudyBuddy.
+
+| Criterion                                              | Result                                                                                                           | Evidence                                                                                                                                                                   |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5. What arrives: original bytes, text only, or nothing | **Text only.** 392 characters, 0 bytes, no fingerprint. Both check phrases arrived; layout and formatting didn't | The file report in the private `connection-test.json` (received 16:12:46 UTC); the original's size and SHA-256 are in `data/private/connection-test/3.3-original-deck.txt` |
+
+Things we learned:
+
+- **Claude can't hand the file itself to StudyBuddy.** It reads the file and passes on the words. It said the only way to send the real file is to copy about 77,000 characters of encoded data by hand, where one mistake breaks the file, so it chose not to.
+- **Text-only is honest here.** Claude reported "text only" rather than pretending it had sent the file, so the gate's "contents invented or partly sent" check held.
+- **What this means for course import (increment 005):** plan on either the text Claude pulls out of slides, which loses images, layout and possibly speaker notes, or a separate way to give StudyBuddy the file directly (for example, a file picker on a StudyBuddy screen or a watched folder). Choosing between them is a decision for that increment.
