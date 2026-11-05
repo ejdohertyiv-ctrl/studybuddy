@@ -36,6 +36,7 @@
 - **Plan limits for learners.**
   - Claude: custom connectors work on all plans including Free, but Free allows only one and the feature is in beta.
   - ChatGPT: third-party guides say a paid plan is needed. Not confirmed on OpenAI's own pages.
+  - Earlier evidence, found November 1, 2026: an October 25 pilot (a small MCP server with two sample questions, kept outside this repo in `OneDrive\Desktop\ChatGPT\StudyBuddy\plugin-test`) showed its in-chat card inside ChatGPT on a Plus account through a development tunnel. One screenshot is the only record, and the test hasn't been repeated. It shows a paid plan can work, not that a free one can't.
 - **Long study sessions use the learner's own message allowance.**
 - **StudyBuddy doesn't control the model,** so question quality can shift when Claude or ChatGPT update. The Exam 2 log becomes the standing accuracy test set.
 - **Chat apps can't send reminders.** The "re-test a day later" rule (product rule 2) needs another channel, such as an email or a calendar export.
