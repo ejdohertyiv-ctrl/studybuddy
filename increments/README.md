@@ -24,4 +24,4 @@ One increment ships at a time. The next starts only after the previous one is me
 | --- | --------------------------------------- | ---------------------------------- | ---------- | ----------------------------------------------------------- |
 | 000 | [Repo setup](000-repo-setup/)           | Complete                           | None       | [#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) |
 | 001 | [Data model](001-data-model/)           | Steps 1.1–1.2 merged; 1.3 proposed | 000        | [#2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) |
-| 003 | [Connection test](003-connection-test/) | In progress                        | 000        | Step 3.1                                                    |
+| 003 | [Connection test](003-connection-test/) | 3.1 built; 3.2 passed; 3.3 next    | 000        | [#5](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/5) |
