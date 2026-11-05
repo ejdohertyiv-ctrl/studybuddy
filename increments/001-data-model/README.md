@@ -1,6 +1,6 @@
 # 001 — Data model
 
-**Status:** Under review. Steps 1.1 and 1.2 are in [pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2), which is ready to merge now that increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) is merged. The owner decided the findings that needed agreement on October 30, 2026; the rest are fixed or recorded as open for a named later increment. Step 1.3, the real-data check, is ready to plan now that the real samples have been found. The [data-quality gate](#data-quality-gate) keeps increment 002 waiting until it passes.
+**Status:** In progress. Steps 1.1 and 1.2 were merged on November 4, 2026 ([pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2)). Step 1.3, the real-data check (the load test), was run on November 5, 2026: 30 real Exam 2 answers and 10 real slides were put into these records. Every answer and slide either fit or has a written reason, and the existing checks found no errors. It also found [gaps](#step-13-findings) the records need fixed before increment 002 can replay the real log. Those fixes are proposed as step 1.4 and wait for the owner's OK.
 
 ## Outcome and scope
 
@@ -28,11 +28,12 @@
 
 Steps 1.1 and 1.2 share pull request #2. Step 1.2 fixes 1.1's review findings. Step 1.3 was added on November 1, 2026 by the data-quality gate and will get its own pull request.
 
-| Step | What                                                                                                                      | Status                               |
-| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Under review                         |
-| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Under review                         |
-| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Proposed: samples found, not started |
+| Step | What                                                                                                                      | Status                              |
+| ---- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Merged November 4, 2026             |
+| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Merged November 4, 2026             |
+| 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Done November 5, 2026; under review |
+| 1.4  | Fix the gaps step 1.3 found that block increment 002                                                                      | Proposed; needs the owner's OK      |
 
 ## Requirements and decisions
 
@@ -137,13 +138,13 @@ Applied after the fact on November 1, 2026. These gaps are recorded, not rebuilt
 
 **Gaps:**
 
-| #   | Gap                                                                                                                                                                                                                | Blocks        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| G1  | `Concept` has no draft, checked or rejected status, so AI-extracted concepts can't be held as drafts.                                                                                                              | Increment 005 |
-| G2  | A draft or rejected `Question` has no reason field, so the learner can't see why it was held back.                                                                                                                 | Increment 004 |
-| G3  | "Only checked questions count" is a comment on the type. No function enforces it yet; the learner model has to, with a test.                                                                                       | Increment 002 |
-| G4  | Nothing checks the shape of incoming data at runtime (already noted above).                                                                                                                                        | Increment 002 |
-| G5  | Real-data fit is untested. **Step 1.3** expresses about 30 real Exam 2 answers and about 10 real slides in these records, runs the existing checks on them, and records every field that can't hold the real data. | Increment 002 |
+| #   | Gap                                                                                                                                                                                                                                                                                              | Blocks        |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| G1  | `Concept` has no draft, checked or rejected status, so AI-extracted concepts can't be held as drafts.                                                                                                                                                                                            | Increment 005 |
+| G2  | A draft or rejected `Question` has no reason field, so the learner can't see why it was held back.                                                                                                                                                                                               | Increment 004 |
+| G3  | "Only checked questions count" is a comment on the type. No function enforces it yet; the learner model has to, with a test.                                                                                                                                                                     | Increment 002 |
+| G4  | Nothing checks the shape of incoming data at runtime (already noted above).                                                                                                                                                                                                                      | Increment 002 |
+| G5  | **Tested November 5, 2026 (step 1.3); fixes F1–F4 pending in step 1.4.** Was: real-data fit is untested. **Step 1.3** expresses about 30 real Exam 2 answers and about 10 real slides in these records, runs the existing checks on them, and records every field that can't hold the real data. | Increment 002 |
 
 **What step 1.3 uses.** Both samples were found on November 1, 2026. An earlier note here said they were missing; that was wrong, because the search was cut short. They are kept outside the repo in the owner's private materials folder (`C:\Users\ejdoh\dev\studybuddy-materials`). Only the small samples step 1.3 uses get copied into `data/private/`.
 
@@ -152,4 +153,51 @@ Applied after the fact on November 1, 2026. These gaps are recorded, not rebuilt
 
 Nothing from these samples counts as validation until step 1.3 is done and reviewed. The sample course stays a development aid.
 
-**Gate: blocked for increment 002 until step 1.3 passes.** The materials are available, so step 1.3 is ready to plan. Merging pull request #2 is fine. Independent work (increment 003, the connection test) can go ahead.
+### Step 1.3 findings
+
+Run on November 5, 2026 with `node tools/load-test/src/main.ts <materials folder>`, following the [blueprint the owner approved that day](../../docs/load-test-blueprint.md). The sample and the detailed report stay in `data/private/load-test/`. Only these counts are committed.
+
+**Sample:** 30 answers from 15 sessions: both guesses (one of them the "c/d" answer), 6 misses on key concepts (zone pricing four times, the decline stage, divisibility), 4 other misses with notes, 5 re-tests, 3 with no answer written, and 10 right answers. All 8 topics are covered. Plus slides 1–10 of `MGM301_10_Pricing - 1.pptx`, as text.
+
+**How the missing parts were handled (owner, November 5, 2026):** each logged question is one part worth 1 point (right = 1, wrong = 0), graded by `ai`, version `exam2-log-import`. Unsure is true only for a logged guess. Nothing else is filled in.
+
+| Field                              | Fits                           | Fits, with a note                                           | Missing, allowed | Missing, required            | Nowhere to keep it                            |
+| ---------------------------------- | ------------------------------ | ----------------------------------------------------------- | ---------------- | ---------------------------- | --------------------------------------------- |
+| Session mode, start time, topics   | 15 sessions, 30 answers        |                                                             |                  |                              |                                               |
+| Session end time                   |                                |                                                             | 15               |                              |                                               |
+| Session title and note             |                                |                                                             |                  |                              | 15                                            |
+| Session score vs. its answers      | 15 match                       |                                                             |                  |                              |                                               |
+| Question text, options, answer key |                                |                                                             |                  | 30                           |                                               |
+| Answer given                       |                                | 26 (14 as words, 12 as a letter whose options weren't kept) |                  | 3                            | 1 ("c/d")                                     |
+| Unsure                             | 30                             |                                                             |                  |                              |                                               |
+| Hints used                         |                                |                                                             |                  | 30                           |                                               |
+| Time taken                         |                                |                                                             |                  | 30                           |                                               |
+| When answered                      |                                |                                                             |                  | 30 (only the session's time) |                                               |
+| Grade (points)                     | 30, all agree with right/wrong |                                                             |                  |                              |                                               |
+| Grade note                         |                                | 11                                                          |                  |                              |                                               |
+| Concept the answer tests           |                                |                                                             |                  | 30 (a name at best, no link) |                                               |
+| Re-test of an earlier miss         |                                |                                                             |                  |                              | 5                                             |
+| Question source tag                |                                |                                                             |                  |                              | 1                                             |
+| Deck, slide numbers                | 1 deck, 10 slides              |                                                             |                  |                              |                                               |
+| Slide text                         |                                | 10 (only as an excerpt)                                     |                  |                              |                                               |
+| Slide pictures and charts          |                                |                                                             |                  |                              | 4 slides that are only a title plus a picture |
+
+The log's shape was also checked as it was read: all 46 sessions and 8 topics passed.
+
+**What it means:** grades fit fine. Everything about _what was asked_ and _when_ doesn't, because the log never kept it and the records have no way to say "not recorded". The thermostat (increment 002) needs at least the concept each answer tests and a way to hold "not recorded".
+
+**Fix list (proposed, for the owner's OK):**
+
+| #   | Fix                                                                                                                                                 | When                                  |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| F1  | Time taken can be "unknown"                                                                                                                         | Step 1.4, before 002                  |
+| F2  | Hints used can be "unknown"                                                                                                                         | Step 1.4                              |
+| F3  | An answer can carry only its session's time, marked as such                                                                                         | Step 1.4                              |
+| F4  | An imported question can exist with only its label, topic and concept, marked "imported, text not recorded", and never counts as a checked question | Step 1.4                              |
+| F5  | Link each logged term to a concept record (exact matches only, the rest listed for the owner)                                                       | Increment 002, when replaying the log |
+| F6  | A re-test points back to the try it re-tests                                                                                                        | Increment 002                         |
+| F7  | "Torn between two" as a response                                                                                                                    | Decide with the screens (006)         |
+| F8  | A slide record that keeps a slide's title and text; pictures need a separate route (see increment 003's file test)                                  | Increment 005                         |
+| F9  | Session titles and notes                                                                                                                            | Not needed; leave out                 |
+
+**Gate: step 1.3 is done. Increment 002 stays blocked until step 1.4 (F1–F4) is merged.**

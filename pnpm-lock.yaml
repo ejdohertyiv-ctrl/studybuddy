@@ -205,6 +205,12 @@ importers:
 
   packages/questions: {}
 
+  tools/load-test:
+    dependencies:
+      '@studybuddy/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+
   tools/replay: {}
 
   tools/repo-checks: {}
