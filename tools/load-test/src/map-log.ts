@@ -3,12 +3,15 @@
 // records require but the log lacks is reported, not filled in.
 import {
   categorizeResult,
+  findAnswerProblems,
   findEvaluationProblems,
+  isCheckedQuestion,
   makeId,
   parseIsoDateTime,
+  type AnswerEvent,
   type Evaluation,
+  type ImportedQuestion,
   type OptionLabel,
-  type Question,
   type Response,
   type StudyMode,
 } from "@studybuddy/core";
@@ -27,7 +30,7 @@ export type FitOutcome =
 export interface FieldFinding {
   /** Which logged record, e.g. "s21-clear-red #X3". */
   readonly record: string;
-  /** The StudyBuddy field, e.g. "AnswerEvent.timeTakenMs". */
+  /** The StudyBuddy field, e.g. "AnswerEvent.timeTaken". */
   readonly field: string;
   readonly outcome: FitOutcome;
   readonly detail: string;
@@ -129,58 +132,84 @@ function mapResponse(answer: string | undefined): {
   };
 }
 
-/**
- * The grade check. Each logged question is one rubric part worth 1 point: right = 1, wrong = 0
- * (owner, November 5, 2026). The question here is a stand-in used only to run the existing
- * checks; it is not stored, because its text, options and key weren't recorded.
- */
-export function checkGrade(
-  key: string,
-  result: LogResult,
-): { evaluation: Evaluation; problems: string[]; category: string } {
-  const questionId = makeId("Question", key);
-  const partId = makeId("RubricComponent", `${key} whole`);
-  const standIn: Question = {
-    id: questionId,
+/** The imported question a logged answer points to (decision 0004). Its text was never kept. */
+export function importedQuestionFor(key: string, result: LogResult): ImportedQuestion {
+  return {
+    id: makeId("Question", key),
     courseId: makeId("Course", "mgm-301"),
-    conceptIds: [],
-    format: "multipleChoice",
-    angle: "definition",
-    stem: "",
-    options: [],
-    answerKey: "",
+    topicId: makeId("Topic", result.topic),
+    label: String(result.q),
+    importedFrom: "MGM 301 Exam 2 log",
+    // One part worth 1 point (owner, November 5, 2026). Its concept is linked in increment 002.
     rubric: [
-      {
-        id: partId,
-        description: "Whole question",
-        points: 1,
-        conceptId: makeId("Concept", "not linked"),
-      },
+      { id: makeId("RubricComponent", `${key} whole`), description: "Whole question", points: 1 },
     ],
-    familyId: makeId("QuestionFamily", key),
-    difficulty: { status: "unknown" },
-    checkStatus: "checked",
-    sources: [],
   };
-  const evaluation: Evaluation = {
+}
+
+/** Right = 1 point, wrong = 0, on the question's one part. */
+export function importedEvaluation(question: ImportedQuestion, result: LogResult): Evaluation {
+  const part = question.rubric[0];
+  if (part === undefined) {
+    throw new Error(`Imported question ${question.id} has no rubric part.`);
+  }
+  return {
     status: "graded",
     components: [
       {
-        componentId: partId,
+        componentId: part.id,
         pointsEarned: result.correct ? 1 : 0,
         ...(result.note === undefined ? {} : { note: result.note }),
       },
     ],
     gradedBy: IMPORT_GRADER,
   };
-  const problems = findEvaluationProblems(evaluation, standIn);
+}
+
+/** Runs the existing grade checks on a logged answer. */
+export function checkGrade(
+  key: string,
+  result: LogResult,
+): { evaluation: Evaluation; problems: string[]; category: string } {
+  const question = importedQuestionFor(key, result);
+  const evaluation = importedEvaluation(question, result);
+  const problems = findEvaluationProblems(evaluation, question);
   let category: string;
   try {
-    category = categorizeResult(evaluation, standIn);
+    category = categorizeResult(evaluation, question);
   } catch (error) {
     category = `error: ${errorMessage(error)}`;
   }
   return { evaluation, problems, category };
+}
+
+/** The answer's 1-based position in its session, in log order. */
+function positionOf(session: LogSession, result: LogResult): number {
+  return (session.results ?? []).indexOf(result) + 1;
+}
+
+/**
+ * The answer record for a logged answer, or undefined when its response can't be held (nothing
+ * written down, or two letters). Nothing is filled in that the log didn't keep.
+ */
+export function buildAnswer(session: LogSession, result: LogResult): AnswerEvent | undefined {
+  const key = answerKey(session, result);
+  const response = mapResponse(result.answer).response;
+  if (response === undefined) {
+    return undefined;
+  }
+  return {
+    id: makeId("AnswerEvent", key),
+    ownerId: makeId("Learner", "owner"),
+    sessionId: makeId("Session", session.key),
+    questionId: makeId("Question", key),
+    response,
+    markedUnsure: result.guess === true,
+    assistance: "notRecorded",
+    timeTaken: { status: "notRecorded" },
+    answeredAt: { kind: "sessionOnly", position: positionOf(session, result) },
+    evaluation: importedEvaluation(importedQuestionFor(key, result), result),
+  };
 }
 
 export function mapAnswer(session: LogSession, result: LogResult): FieldFinding[] {
@@ -190,10 +219,11 @@ export function mapAnswer(session: LogSession, result: LogResult): FieldFinding[
     findings.push({ record, field, outcome, detail });
   };
 
+  const question = importedQuestionFor(record, result);
   add(
-    "Question stem, options and answer key",
-    "requiredNotRecorded",
-    `The log keeps only the label "${String(result.q)}", not the question.`,
+    "Question (imported, text not recorded)",
+    isCheckedQuestion(question) ? "noPlaceToKeep" : "optionalNotRecorded",
+    `Imported question "${question.label}"; never counts as a checked question.`,
   );
 
   const response = mapResponse(result.answer);
@@ -204,17 +234,27 @@ export function mapAnswer(session: LogSession, result: LogResult): FieldFinding[
     "fits",
     result.guess === true ? "true (logged as a guess)" : "false (not marked)",
   );
-  add("AnswerEvent.assistance", "requiredNotRecorded", "Hints weren't logged.");
+  add("AnswerEvent.assistance", "optionalNotRecorded", "notRecorded: hints weren't logged.");
   add(
-    "AnswerEvent.timeTakenMs",
-    "requiredNotRecorded",
-    "Time per answer wasn't logged, and the field has no way to say unknown.",
+    "AnswerEvent.timeTaken",
+    "optionalNotRecorded",
+    "notRecorded: time per answer wasn't logged.",
   );
   add(
-    "AnswerEvent.submittedAt",
-    "requiredNotRecorded",
-    "Only the session's time is logged, not each answer's.",
+    "AnswerEvent.answeredAt",
+    "optionalNotRecorded",
+    `sessionOnly, position ${String(positionOf(session, result))}: only the session's time was logged.`,
   );
+
+  const answer = buildAnswer(session, result);
+  if (answer !== undefined) {
+    const problems = findAnswerProblems(answer, question);
+    add(
+      "AnswerEvent checks",
+      problems.length === 0 ? "fits" : "noPlaceToKeep",
+      problems.length === 0 ? "No problems." : problems.join(" "),
+    );
+  }
 
   const expected = result.correct ? "correct" : "incorrect";
   const grade = checkGrade(record, result);
@@ -237,16 +277,16 @@ export function mapAnswer(session: LogSession, result: LogResult): FieldFinding[
 
   add(
     "Rubric part's concept",
-    "requiredNotRecorded",
+    "optionalNotRecorded",
     result.term === undefined
-      ? "No concept named."
-      : `Named "${result.term}", but not linked to a concept record.`,
+      ? "No concept named; allowed on imported questions until increment 002 links it."
+      : `Named "${result.term}"; linked in increment 002 (F5).`,
   );
   if (result.retest !== undefined) {
     add(
       "Re-test label",
       "noPlaceToKeep",
-      `Re-tests "${result.retest}". No field links a re-test to the earlier try.`,
+      `Re-tests "${result.retest}". No field links a re-test to the earlier try (F6, increment 002).`,
     );
   }
   if (result.sourceTag !== undefined) {

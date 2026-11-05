@@ -165,3 +165,40 @@ export interface Question {
   readonly checkStatus: QuestionCheckStatus;
   readonly sources: readonly SourceLocation[];
 }
+
+/** A rubric part on an imported question. The concept may not be linked yet (decision 0004). */
+export interface ImportedRubricComponent {
+  readonly id: RubricComponentId;
+  readonly description: string;
+  readonly points: number;
+  readonly conceptId?: ConceptId;
+}
+
+/**
+ * A question from imported history whose wording, options and answer key were never recorded,
+ * e.g. an Exam 2 log entry that kept only "question 5" (decision 0004). It exists only so past
+ * answers have something to point to. It has no check status, so it is never a checked question:
+ * it is never asked again and never counts as a checked question.
+ */
+export interface ImportedQuestion {
+  readonly id: QuestionId;
+  readonly courseId: CourseId;
+  readonly topicId: TopicId;
+  /** The question's number or label in the source, e.g. "5" or "F1". */
+  readonly label: string;
+  /** Where it came from, e.g. "MGM 301 Exam 2 log". */
+  readonly importedFrom: string;
+  readonly rubric: readonly ImportedRubricComponent[];
+}
+
+/** Any question an answer can point to. */
+export type AnyQuestion = Question | ImportedQuestion;
+
+export function isImportedQuestion(question: AnyQuestion): question is ImportedQuestion {
+  return "importedFrom" in question;
+}
+
+/** Only checked questions count toward grades and the learner model (gap G3). */
+export function isCheckedQuestion(question: AnyQuestion): question is Question {
+  return !isImportedQuestion(question) && question.checkStatus === "checked";
+}

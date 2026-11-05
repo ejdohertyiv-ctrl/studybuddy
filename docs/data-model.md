@@ -14,15 +14,16 @@ Every record has an `id`. Every private record has an `ownerId`, so friends' dat
 
 ## 1. Course content (shared per class)
 
-| Record             | What it is                                                  | Key fields                                                                                                                            |
-| ------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Course**         | A class in a term                                           | code (`MGM 301`), name, term, professor                                                                                               |
-| **Exam**           | One exam in that course                                     | name, date, allowed aids, optional format template from the professor's practice exam (how many of each question type, topic weights) |
-| **SourceDocument** | A lecture deck, textbook chapter, syllabus or practice exam | kind, title, number of pages or slides. The original file stays private to whoever uploaded it; only its description is shared.       |
-| **SourceLocation** | A precise place in a source                                 | document, page or slide number, optional short excerpt                                                                                |
-| **Topic**          | A chunk of the course                                       | name, chapters, lecture, exam weight                                                                                                  |
-| **Concept**        | One thing to learn, e.g. "zone pricing"                     | term, definition, kind (formula, process, look-alike, rule), sibling group, prerequisites, where it came from                         |
-| **Question**       | One question                                                | concept(s), format, stem, options, answer key, rubric, angle, family, difficulty, check status, sources                               |
+| Record               | What it is                                                                                    | Key fields                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Course**           | A class in a term                                                                             | code (`MGM 301`), name, term, professor                                                                                               |
+| **Exam**             | One exam in that course                                                                       | name, date, allowed aids, optional format template from the professor's practice exam (how many of each question type, topic weights) |
+| **SourceDocument**   | A lecture deck, textbook chapter, syllabus or practice exam                                   | kind, title, number of pages or slides. The original file stays private to whoever uploaded it; only its description is shared.       |
+| **SourceLocation**   | A precise place in a source                                                                   | document, page or slide number, optional short excerpt                                                                                |
+| **Topic**            | A chunk of the course                                                                         | name, chapters, lecture, exam weight                                                                                                  |
+| **Concept**          | One thing to learn, e.g. "zone pricing"                                                       | term, definition, kind (formula, process, look-alike, rule), sibling group, prerequisites, where it came from                         |
+| **Question**         | One question                                                                                  | concept(s), format, stem, options, answer key, rubric, angle, family, difficulty, check status, sources                               |
+| **ImportedQuestion** | A question from old history whose wording was never kept, e.g. "question 5" in the Exam 2 log | label, topic, rubric (concept linked later), where it came from. Never a checked question, never asked again (decision 0004)          |
 
 **Question details that matter:**
 
@@ -47,8 +48,10 @@ Every record has an `id`. Every private record has an `ownerId`, so friends' dat
 
 - **The response:** the option picked, typed text, or a number. ("I don't know yet" as its own kind of response was proposed and deliberately left out; see decision 0003.)
 - **Confidence, optional, as a single "unsure" flag:** marked or not marked. Not marked is **not** evidence of confidence either way (your approved rule).
-- **Help used:** none, hint, or worked example.
-- **Time taken and when it was submitted.** Time is stored but, per your plan, never used alone to judge ability.
+- **Help used:** none, hint, worked example, or _not recorded_.
+- **Time taken:** measured, or _not recorded_. Time is stored but, per your plan, never used alone to judge ability.
+- **When it was answered:** an exact time, or _"during this session, answer #N"_ when only the session's time is known.
+- **"Not recorded" is only for imported history** like the Exam 2 log, and never counts as 0 or "no hint". Answers given in StudyBuddy always record real values (decision 0004).
 - **The grade:**
   - _Status:_ graded, not graded yet, or couldn't be graded reliably.
   - _Points:_ earned out of available, plus points for each rubric part.

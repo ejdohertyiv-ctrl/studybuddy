@@ -1,4 +1,4 @@
-import { makeId, type Question } from "@studybuddy/core";
+import { findAnswerProblems, makeId, type Question } from "@studybuddy/core";
 import { sampleCourse } from "@studybuddy/fixtures";
 import { describe, expect, it } from "vitest";
 import { gradeOptionAnswer, toPracticeResult, toPublicQuestion } from "./practice.ts";
@@ -11,6 +11,7 @@ const context = {
   sessionId: makeId("Session", "test"),
   answerId: "answer-1",
   submittedAt: "2026-11-04T12:00:00Z",
+  timeTakenMs: 4200,
 };
 
 describe("toPublicQuestion", () => {
@@ -24,6 +25,20 @@ describe("toPublicQuestion", () => {
 });
 
 describe("gradeOptionAnswer", () => {
+  it("records the time the card measured, with the exact time answered", () => {
+    const answer = gradeOptionAnswer(question, "A", context);
+    expect(answer.timeTaken).toEqual({ status: "measured", ms: 4200 });
+    expect(answer.answeredAt).toEqual({ kind: "exact", at: "2026-11-04T12:00:00Z" });
+    expect(findAnswerProblems(answer, question)).toEqual([]);
+  });
+
+  it("refuses a time taken that isn't real", () => {
+    expect(() => gradeOptionAnswer(question, "A", { ...context, timeTakenMs: -1 })).toThrow();
+    expect(() =>
+      gradeOptionAnswer(question, "A", { ...context, timeTakenMs: Number.NaN }),
+    ).toThrow();
+  });
+
   it("gives full points for the right option and records it as graded by code", () => {
     const answer = gradeOptionAnswer(question, "A", context);
     expect(answer.evaluation).toMatchObject({ status: "graded", gradedBy: { kind: "code" } });

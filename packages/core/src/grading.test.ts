@@ -87,8 +87,8 @@ describe("findCurrentEvaluation", () => {
     response: { kind: "text", text: "A made-up answer." },
     markedUnsure: false,
     assistance: "none",
-    timeTakenMs: 30_000,
-    submittedAt: "2026-10-30T15:00:00Z",
+    timeTaken: { status: "measured", ms: 30_000 },
+    answeredAt: { kind: "exact", at: "2026-10-30T15:00:00Z" },
     evaluation: graded(1, 0),
   };
 

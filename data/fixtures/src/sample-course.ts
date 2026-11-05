@@ -323,8 +323,8 @@ export const sampleCourse: SampleData = {
       response: { kind: "option", label: "A" },
       markedUnsure: false,
       assistance: "none",
-      timeTakenMs: 12_000,
-      submittedAt: "2026-10-30T14:02:00Z",
+      timeTaken: { status: "measured", ms: 12_000 },
+      answeredAt: { kind: "exact", at: "2026-10-30T14:02:00Z" },
       evaluation: {
         status: "graded",
         components: [
@@ -345,8 +345,8 @@ export const sampleCourse: SampleData = {
       response: { kind: "option", label: "A" },
       markedUnsure: true,
       assistance: "none",
-      timeTakenMs: 20_000,
-      submittedAt: "2026-10-30T14:05:00Z",
+      timeTaken: { status: "measured", ms: 20_000 },
+      answeredAt: { kind: "exact", at: "2026-10-30T14:05:00Z" },
       evaluation: {
         status: "graded",
         components: [
@@ -370,8 +370,8 @@ export const sampleCourse: SampleData = {
       },
       markedUnsure: false,
       assistance: "hint",
-      timeTakenMs: 75_000,
-      submittedAt: "2026-10-30T14:10:00Z",
+      timeTaken: { status: "measured", ms: 75_000 },
+      answeredAt: { kind: "exact", at: "2026-10-30T14:10:00Z" },
       evaluation: {
         status: "unresolved",
         reason: 'Unclear whether "vibe" means lifestyle and values.',
@@ -393,8 +393,8 @@ export const sampleCourse: SampleData = {
       response: { kind: "number", value: 25, unit: "%" },
       markedUnsure: false,
       assistance: "none",
-      timeTakenMs: 40_000,
-      submittedAt: "2026-10-30T14:15:00Z",
+      timeTaken: { status: "measured", ms: 40_000 },
+      answeredAt: { kind: "exact", at: "2026-10-30T14:15:00Z" },
       evaluation: {
         status: "graded",
         components: [

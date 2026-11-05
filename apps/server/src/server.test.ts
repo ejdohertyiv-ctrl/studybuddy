@@ -69,7 +69,7 @@ describe("the connection-test server", () => {
     const first = await connect(new AnswerStore(folder));
     const reply = await first.callTool({
       name: "submit_practice_answer",
-      arguments: { questionId: question.id, option: "B" },
+      arguments: { questionId: question.id, option: "B", timeTakenMs: 3000 },
     });
     expect(textOf(reply)).toContain('"correct":false');
 
@@ -85,7 +85,7 @@ describe("the connection-test server", () => {
     const client = await connect(new AnswerStore(folder));
     const reply = await client.callTool({
       name: "submit_practice_answer",
-      arguments: { questionId: "not-a-question", option: "A" },
+      arguments: { questionId: "not-a-question", option: "A", timeTakenMs: 3000 },
     });
     expect(reply.isError).toBe(true);
   });

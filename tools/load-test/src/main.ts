@@ -9,7 +9,8 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readExam2Log } from "./exam2-log.ts";
-import { mapAnswer, mapSession, type FieldFinding } from "./map-log.ts";
+import { makeId, orderAnswers, type AnswerEvent } from "@studybuddy/core";
+import { buildAnswer, mapAnswer, mapSession, type FieldFinding } from "./map-log.ts";
 import { mapSlides, readDeck } from "./map-slides.ts";
 import { selectSample } from "./select-sample.ts";
 import { summarizeByField, summaryTable } from "./summarize.ts";
@@ -41,6 +42,37 @@ const findings: FieldFinding[] = [
   ...sample.flatMap((item) => mapAnswer(item.session, item.result)),
   ...mapSlides(DECK, deck.length, slides),
 ];
+
+// Can the built answers be put in the order they were given, without made-up times?
+const built = sample
+  .map(({ session, result }) => buildAnswer(session, result))
+  .filter((answer): answer is AnswerEvent => answer !== undefined);
+try {
+  const ordered = orderAnswers(
+    built,
+    sampledSessions.map((session) => ({
+      id: makeId("Session", session.key),
+      ownerId: makeId("Learner", "owner"),
+      courseId: makeId("Course", "mgm-301"),
+      mode: "focusedReview",
+      startedAt: session.date,
+      scope: { topicIds: [] },
+    })),
+  );
+  findings.push({
+    record: "all built answers",
+    field: "Answer order (session start, then position)",
+    outcome: "fits",
+    detail: `${String(ordered.length)} answers ordered without made-up times.`,
+  });
+} catch (error) {
+  findings.push({
+    record: "all built answers",
+    field: "Answer order (session start, then position)",
+    outcome: "noPlaceToKeep",
+    detail: error instanceof Error ? error.message : String(error),
+  });
+}
 
 const outFolder = fileURLToPath(new URL("../../../data/private/load-test", import.meta.url));
 mkdirSync(outFolder, { recursive: true });

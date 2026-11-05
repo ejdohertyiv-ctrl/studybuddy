@@ -42,7 +42,27 @@ export type Response =
   | { readonly kind: "text"; readonly text: string }
   | { readonly kind: "number"; readonly value: number; readonly unit?: string };
 
-export type Assistance = "none" | "hint" | "workedExample";
+/**
+ * "notRecorded" is only for imported history that never logged hints (decision 0004). It is not
+ * "none": the learner model must skip it, not count it as unassisted.
+ */
+export type Assistance = "none" | "hint" | "workedExample" | "notRecorded";
+
+/**
+ * How long the answer took. "notRecorded" when it wasn't measured (decision 0004); it is never 0
+ * and never counts as fast or slow.
+ */
+export type TimeTaken =
+  { readonly status: "measured"; readonly ms: number } | { readonly status: "notRecorded" };
+
+/**
+ * When the answer was given. "sessionOnly" is for imported history that kept one time per
+ * session: the answer happened during its session, at this 1-based position, and no time is
+ * made up for it (decision 0004).
+ */
+export type AnsweredAt =
+  | { readonly kind: "exact"; readonly at: IsoDateTime }
+  | { readonly kind: "sessionOnly"; readonly position: number };
 
 export interface Grader {
   /** Code grades multiple choice, true/false and calculations; AI grades open answers. */
@@ -95,8 +115,8 @@ export interface AnswerEvent {
    */
   readonly markedUnsure: boolean;
   readonly assistance: Assistance;
-  readonly timeTakenMs: number;
-  readonly submittedAt: IsoDateTime;
+  readonly timeTaken: TimeTaken;
+  readonly answeredAt: AnsweredAt;
   /** The original grade. Later fixes are GradingCorrections; this is never overwritten. */
   readonly evaluation: Evaluation;
 }
