@@ -43,14 +43,14 @@ Steps 3.2 and 3.3 produce findings, not much code. They are recorded below in a 
 
 ## How to connect (step 3.2)
 
-Claude Desktop from the Microsoft Store keeps its settings at `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude_desktop_config.json`. Add:
+Claude Desktop from the Microsoft Store keeps its settings at `%LOCALAPPDATA%\Claude-Data\claude_pzs8sxrjxfjjc\claude_desktop_config.json` (found November 4, 2026; the `Packages\...\Roaming\Claude` folder is not used). Keep the existing settings and add:
 
 ```json
 {
   "mcpServers": {
     "studybuddy": {
-      "command": "C:\\Program Files\\nodejs\\node.exe",
-      "args": ["C:\\Users\\ejdoh\\dev\\studybuddy\\apps\\server\\src\\main.ts"]
+      "command": "C:/Program Files/nodejs/node.exe",
+      "args": ["C:/Users/ejdoh/dev/studybuddy/apps/server/src/main.ts"]
     }
   }
 }
