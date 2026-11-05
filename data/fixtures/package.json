@@ -1,0 +1,12 @@
+{
+  "name": "@studybuddy/fixtures",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/sample-course.ts"
+  },
+  "dependencies": {
+    "@studybuddy/core": "workspace:*"
+  }
+}

@@ -3,7 +3,7 @@
 /** The only file inside data/private that may be committed. Everything else there is personal study data. */
 const allowedPrivatePaths: ReadonlySet<string> = new Set(["data/private/readme.md"]);
 
-const sourceRoots = ["apps/", "packages/", "tools/"];
+const sourceRoots = ["apps/", "packages/", "tools/", "data/fixtures/"];
 const kebabCaseSourceFile = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.test)?\.tsx?$/;
 
 /** Returns tracked files under data/private that are not on the allow list. */
