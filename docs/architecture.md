@@ -12,7 +12,7 @@ A study app with three modes:
 
 A dashboard and calendar come later. It works for any class with an exam.
 
-The method (not this code, which didn't exist yet) was tried for real on MGM 301 (marketing) Exam 2 prep: one learner, run by hand in a Claude chat and logged to a page, over 46 sessions, 243 graded answers and 41 observations. Scores went from 6/16 on a diagnostic to 18/20 on the professor's practice exam, which allowed unlimited retakes. The real exam score wasn't recorded at the time.
+The method (not this code, which didn't exist yet) was tried for real on MGM 301 (marketing) Exam 2 prep: one learner, run by hand in a Claude chat and logged to a page, over 46 sessions, 243 graded answers and 41 observations. Scores went from 6/16 on a diagnostic to 18/20 on the professor's practice exam, which allowed unlimited retakes. The real exam score was 90 (reported by the owner on November 4, 2026). That is one learner, and it can't separate the method from the extra study hours.
 
 ## Product rules the code must support (from that test)
 

@@ -1,6 +1,6 @@
 # 001 — Data model
 
-**Status:** Under review. Steps 1.1 and 1.2 are in [pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2), which is ready to merge now that increment 000 ([#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1)) is merged. The owner decided the findings that needed agreement on October 30, 2026; the rest are fixed or recorded as open for a named later increment. Step 1.3, the real-data check, is ready to plan now that the real samples have been found. The [data-quality gate](#data-quality-gate) keeps increment 002 waiting until it passes.
+**Status:** Steps 1.1 and 1.2 were merged on November 4, 2026 ([pull request #2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2)). Step 1.3 is proposed: its plan has been shown to the owner but not approved yet. The owner decided the findings that needed agreement on October 30, 2026; the rest are fixed or recorded as open for a named later increment. Step 1.3, the real-data check, is ready to plan now that the real samples have been found. The [data-quality gate](#data-quality-gate) keeps increment 002 waiting until it passes.
 
 ## Outcome and scope
 
@@ -30,8 +30,8 @@ Steps 1.1 and 1.2 share pull request #2. Step 1.2 fixes 1.1's review findings. S
 
 | Step | What                                                                                                                      | Status                               |
 | ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Under review                         |
-| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Under review                         |
+| 1.1  | Records, grading helpers, sample course, data-model doc, decision 0003                                                    | Merged (Nov 4)                       |
+| 1.2  | Review fixes: grades must fit their question; times must be real and zoned; tied corrections refused; decimal-safe totals | Merged (Nov 4)                       |
 | 1.3  | Real-data check: express a small real sample in these records, kept in `data/private/` (see the gate below)               | Proposed: samples found, not started |
 
 ## Requirements and decisions

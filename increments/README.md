@@ -20,7 +20,8 @@ One increment ships at a time. The next starts only after the previous one is me
 - Each increment's record lists its steps and their status.
 - An increment that needs more than nine steps gets split.
 
-| #   | Increment                     | Status       | Depends on | Pull request                                                |
-| --- | ----------------------------- | ------------ | ---------- | ----------------------------------------------------------- |
-| 000 | [Repo setup](000-repo-setup/) | Complete     | None       | [#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) |
-| 001 | [Data model](001-data-model/) | Under review | 000        | [#2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) |
+| #   | Increment                               | Status                             | Depends on | Pull request                                                |
+| --- | --------------------------------------- | ---------------------------------- | ---------- | ----------------------------------------------------------- |
+| 000 | [Repo setup](000-repo-setup/)           | Complete                           | None       | [#1](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/1) |
+| 001 | [Data model](001-data-model/)           | Steps 1.1–1.2 merged; 1.3 proposed | 000        | [#2](https://github.com/ejdohertyiv-ctrl/studybuddy/pull/2) |
+| 003 | [Connection test](003-connection-test/) | In progress                        | 000        | Step 3.1                                                    |
