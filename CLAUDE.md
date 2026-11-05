@@ -39,6 +39,16 @@ Planning and building both happen here. Keep the agreed technology stack and arc
 - An unanswered question, placeholder, example, or permission to investigate is **never** an approved requirement.
 - **The owner validates decisions step by step.** Present recommendations with the evidence behind them, ask, and record only what was approved. Agreement to one detail is not approval of a whole feature. Don't re-ask about work already authorised.
 
+### Data-quality gate (every increment)
+
+Approved by the owner on November 1, 2026, to stop garbage in, garbage out. It lives in each increment's record as a short **Data-quality gate** section, not a separate document.
+
+- **Record the inputs.** List the increment's critical inputs, how each is likely to go wrong, the check that catches it, and what happens when the check fails.
+- **Fail visibly.** Invalid or uncertain input is either refused or kept as a clearly labelled draft, each with a reason a learner can understand. It is never quietly turned into a result.
+- **Pass before others build on it.** Work that depends on an increment's output waits until that increment's critical behaviour passes checks on representative real data where it exists, plus realistic edge cases. "Not tested yet" keeps the dependent work **blocked**. Writing the gap down does not pass the gate. Independent work can continue.
+- **AI-made content stays draft until verified.** Questions, extracted concepts and anything else an AI writes stay draft until they pass the increment's defined verification. Drafts never affect grading, mastery estimates or study recommendations. Passing an evaluation sample (for example, zero wrong answer keys) is a requirement for that sample, not proof that every later item is right.
+- **Real data stays private.** Real samples live in `data/private/` and are never committed. Never invent evidence or claim real-data validation that didn't happen.
+
 ### Check inputs before building
 
 - Trace each meaningful behaviour to an approved requirement.

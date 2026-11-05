@@ -83,3 +83,18 @@ From the brief's step 0, checked October 30, 2026:
 ## Remaining limitations
 
 - `tools/repo-checks/src/main.ts`, which runs Git, has no automated test of its own. Its pure checks are tested, and it was verified by the deliberate-failure check.
+
+## Data-quality gate
+
+Applied after the fact on November 1, 2026. No rebuild needed.
+
+| Critical input              | Likely failure                               | Check                                                         | On failure                  |
+| --------------------------- | -------------------------------------------- | ------------------------------------------------------------- | --------------------------- |
+| Files committed to the repo | A real study log or course file is committed | `pnpm repo-checks` in CI (tested; deliberate-failure checked) | CI fails and names the file |
+| Source file names           | Not kebab-case                               | `pnpm repo-checks` (tested)                                   | CI fails and names the file |
+| Code going into `main`      | Unchecked code merges                        | CI on every PR; the owner merges                              | Red build; nothing merges   |
+| Direct pushes to `main`     | Someone skips the PR                         | **None enforced yet** (R1)                                    | Only convention prevents it |
+
+**Real data:** not applicable. This increment handles no study data, and the private-data guard was tested with a realistic file name.
+
+**Gate: passed, safe to build on.** Known gaps are R1 (no branch protection until GitHub Pro) and the untested `main.ts` wrapper. Neither one lets bad study data in.
