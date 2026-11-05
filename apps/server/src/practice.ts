@@ -50,6 +50,8 @@ export interface AnswerContext {
   readonly sessionId: SessionId;
   readonly answerId: string;
   readonly submittedAt: IsoDateTime;
+  /** Measured by the card. Live answers always have a real time (owner, November 5, 2026). */
+  readonly timeTakenMs: number;
 }
 
 /**
@@ -70,6 +72,9 @@ export function gradeOptionAnswer(
     throw new Error(`Question ${question.id} isn't a one-part multiple-choice question.`);
   }
   correctOptionLabel(question);
+  if (!Number.isFinite(context.timeTakenMs) || context.timeTakenMs < 0) {
+    throw new Error(`${String(context.timeTakenMs)} ms isn't a real time taken.`);
+  }
   return {
     id: makeId("AnswerEvent", context.answerId),
     ownerId: context.ownerId,
@@ -78,9 +83,8 @@ export function gradeOptionAnswer(
     response: { kind: "option", label: option.label },
     markedUnsure: false,
     assistance: "none",
-    // The connection test doesn't time answers yet.
-    timeTakenMs: 0,
-    submittedAt: context.submittedAt,
+    timeTaken: { status: "measured", ms: context.timeTakenMs },
+    answeredAt: { kind: "exact", at: context.submittedAt },
     evaluation: {
       status: "graded",
       components: [{ componentId: part.id, pointsEarned: option.isCorrect ? part.points : 0 }],

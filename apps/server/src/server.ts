@@ -68,10 +68,12 @@ export function createStudyBuddyServer(options: ServerOptions): McpServer {
       inputSchema: z.object({
         questionId: z.string(),
         option: z.enum(["A", "B", "C", "D", "E"]),
+        // Measured by the card from when the question appeared to the pick.
+        timeTakenMs: z.number().nonnegative(),
       }),
       _meta: { ui: { resourceUri: PRACTICE_CARD_URI, visibility: ["app"] } },
     },
-    ({ questionId, option }) => {
+    ({ questionId, option, timeTakenMs }) => {
       if (questionId !== question.id) {
         return {
           isError: true,
@@ -83,6 +85,7 @@ export function createStudyBuddyServer(options: ServerOptions): McpServer {
         sessionId: SESSION_ID,
         answerId: randomUUID(),
         submittedAt: now(),
+        timeTakenMs,
       });
       store.saveAnswer(answer);
       const result = toPracticeResult(question, answer);

@@ -1,7 +1,7 @@
 // Made-up log entries only. The real Exam 2 log never enters the repo.
 import { describe, expect, it } from "vitest";
 import { isLogResult, isLogSession, type LogResult, type LogSession } from "./exam2-log.ts";
-import { checkGrade, mapAnswer, mapSession, type FieldFinding } from "./map-log.ts";
+import { buildAnswer, checkGrade, mapAnswer, mapSession, type FieldFinding } from "./map-log.ts";
 import { mapSlides, readDeck } from "./map-slides.ts";
 import { selectSample } from "./select-sample.ts";
 import { summarizeByField } from "./summarize.ts";
@@ -26,15 +26,28 @@ function outcomeOf(findings: FieldFinding[], field: string): string | undefined 
 }
 
 describe("mapAnswer", () => {
-  it("never fills in time, hints or the question, and says so", () => {
+  it("never fills in time, hints or the question: it records them as not recorded", () => {
     const result: LogResult = { correct: true, q: 1, topic: "t1", answer: "Widgets" };
     const findings = mapAnswer(session([result]), result);
-    expect(outcomeOf(findings, "AnswerEvent.timeTakenMs")).toBe("requiredNotRecorded");
-    expect(outcomeOf(findings, "AnswerEvent.assistance")).toBe("requiredNotRecorded");
-    expect(outcomeOf(findings, "AnswerEvent.submittedAt")).toBe("requiredNotRecorded");
-    expect(outcomeOf(findings, "Question stem, options and answer key")).toBe(
-      "requiredNotRecorded",
+    expect(outcomeOf(findings, "AnswerEvent.timeTaken")).toBe("optionalNotRecorded");
+    expect(outcomeOf(findings, "AnswerEvent.assistance")).toBe("optionalNotRecorded");
+    expect(outcomeOf(findings, "AnswerEvent.answeredAt")).toBe("optionalNotRecorded");
+    expect(outcomeOf(findings, "Question (imported, text not recorded)")).toBe(
+      "optionalNotRecorded",
     );
+    expect(outcomeOf(findings, "AnswerEvent checks")).toBe("fits");
+  });
+
+  it("builds an imported answer with its position and no made-up values", () => {
+    const first: LogResult = { correct: true, q: 1, topic: "t1", answer: "a" };
+    const second: LogResult = { correct: false, q: 2, topic: "t1", answer: "Widgets" };
+    const answer = buildAnswer(session([first, second]), second);
+    expect(answer).toMatchObject({
+      assistance: "notRecorded",
+      timeTaken: { status: "notRecorded" },
+      answeredAt: { kind: "sessionOnly", position: 2 },
+    });
+    expect(buildAnswer(session([first]), { correct: true, q: 3, topic: "t1" })).toBeUndefined();
   });
 
   it("marks unsure only for a logged guess", () => {

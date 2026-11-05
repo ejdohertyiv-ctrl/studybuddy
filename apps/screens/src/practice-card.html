@@ -119,6 +119,8 @@
       const optionsEl = document.getElementById("options");
       const resultEl = document.getElementById("result");
       let question = null;
+      // When the question appeared, so the answer's time taken is measured, not made up.
+      let shownAt = 0;
 
       function showResult(result) {
         for (const button of optionsEl.querySelectorAll("button")) {
@@ -143,6 +145,7 @@
           }),
         );
         resultEl.textContent = "";
+        shownAt = performance.now();
         if (card.savedResult) showResult(card.savedResult);
       }
 
@@ -153,7 +156,11 @@
         try {
           const reply = await app.callServerTool({
             name: "submit_practice_answer",
-            arguments: { questionId: question.questionId, option: label },
+            arguments: {
+              questionId: question.questionId,
+              option: label,
+              timeTakenMs: Math.round(performance.now() - shownAt),
+            },
           });
           if (reply.isError || !reply.structuredContent)
             throw new Error("StudyBuddy couldn't save that answer.");

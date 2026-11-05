@@ -146,7 +146,9 @@ describe("sample course: questions are well-formed", () => {
       ...sessions.flatMap((session) =>
         session.endedAt === undefined ? [session.startedAt] : [session.startedAt, session.endedAt],
       ),
-      ...answers.map((answer) => answer.submittedAt),
+      ...answers.flatMap((answer) =>
+        answer.answeredAt.kind === "exact" ? [answer.answeredAt.at] : [],
+      ),
       ...corrections.map((correction) => correction.correctedAt),
       ...confusionPairs.map((pair) => pair.lastConfusedAt),
       ...conceptStates.flatMap((state) =>

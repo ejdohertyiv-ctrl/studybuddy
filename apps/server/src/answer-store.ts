@@ -23,6 +23,25 @@ function isStoredData(value: unknown): value is StoredData {
   );
 }
 
+/**
+ * Answers saved before decision 0004 have "timeTakenMs" (always 0 in the connection test) and
+ * "submittedAt". Reads them in the current shape: the 0 was never a measurement, so it becomes
+ * "notRecorded". Anything else is left as it is.
+ */
+export function upgradeSavedAnswer(answer: unknown): unknown {
+  if (typeof answer !== "object" || answer === null || !("submittedAt" in answer)) {
+    return answer;
+  }
+  const kept = Object.entries(answer).filter(
+    ([key]) => key !== "submittedAt" && key !== "timeTakenMs",
+  );
+  return {
+    ...Object.fromEntries(kept),
+    timeTaken: { status: "notRecorded" },
+    answeredAt: { kind: "exact", at: answer.submittedAt },
+  };
+}
+
 export class AnswerStore {
   readonly #file: string;
 
@@ -35,7 +54,11 @@ export class AnswerStore {
     if (!existsSync(this.#file)) {
       return EMPTY;
     }
-    const parsed: unknown = JSON.parse(readFileSync(this.#file, "utf8"));
+    const raw: unknown = JSON.parse(readFileSync(this.#file, "utf8"));
+    const parsed =
+      typeof raw === "object" && raw !== null && "answers" in raw && Array.isArray(raw.answers)
+        ? { ...raw, answers: raw.answers.map(upgradeSavedAnswer) }
+        : raw;
     if (!isStoredData(parsed)) {
       throw new Error(`${this.#file} isn't a StudyBuddy connection-test file.`);
     }

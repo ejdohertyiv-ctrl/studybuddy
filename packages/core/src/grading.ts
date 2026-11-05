@@ -1,6 +1,6 @@
 // Small pure helpers for reading grades. They work things out from the records instead of
 // storing them twice, and refuse inconsistent data rather than turning it into a result.
-import type { Question } from "./course-content.ts";
+import type { QuestionId, RubricComponentId } from "./ids.ts";
 import type { AnswerEvent, Evaluation, GradingCorrection } from "./study-history.ts";
 import { parseIsoDateTime } from "./time.ts";
 
@@ -13,12 +13,21 @@ export type ResultCategory =
   /** Couldn't be graded reliably. Evaluator uncertainty is not "partly correct". */
   | "unresolved";
 
+/**
+ * What grading needs from a question: its id and its rubric. Both full and imported questions
+ * have these (decision 0004).
+ */
+export interface GradableQuestion {
+  readonly id: QuestionId;
+  readonly rubric: readonly { readonly id: RubricComponentId; readonly points: number }[];
+}
+
 // Points may be fractions (e.g. 0.5). Sums like 0.1 + 0.2 aren't exact in computer
 // arithmetic, so point comparisons allow this much rounding error.
 const pointTolerance = 1e-9;
 
 /** Total points a question is worth: the sum of its rubric parts. */
-export function sumRubricPoints(question: Question): number {
+export function sumRubricPoints(question: GradableQuestion): number {
   return question.rubric.reduce((total, component) => total + component.points, 0);
 }
 
@@ -36,7 +45,10 @@ export function sumPointsEarned(evaluation: Evaluation): number {
  * 0 and that part's points. A "graded" result must score every part; an "unresolved" one may score
  * only the parts that could be graded.
  */
-export function findEvaluationProblems(evaluation: Evaluation, question: Question): string[] {
+export function findEvaluationProblems(
+  evaluation: Evaluation,
+  question: GradableQuestion,
+): string[] {
   if (evaluation.status === "pending") {
     return [];
   }
@@ -75,7 +87,10 @@ export function findEvaluationProblems(evaluation: Evaluation, question: Questio
  * Correct, partly correct or incorrect, worked out from the points. Throws if the question has no
  * points or the grade is inconsistent with the question, rather than reporting a wrong result.
  */
-export function categorizeResult(evaluation: Evaluation, question: Question): ResultCategory {
+export function categorizeResult(
+  evaluation: Evaluation,
+  question: GradableQuestion,
+): ResultCategory {
   if (evaluation.status !== "graded") {
     return evaluation.status;
   }
